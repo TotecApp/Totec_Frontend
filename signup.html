@@ -33,8 +33,13 @@
 
         <script>
             const request = (url, params = {}, method = 'GET', headers = {}) => {
-                let options = {method};
-                options.headers = headers;
+                let options = {
+                    method, 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                };
                 if ('GET' === method) {
                     url += '?' + (new URLSearchParams(params)).toString();
                 } else {
@@ -50,25 +55,22 @@
                 password = document.getElementsByName('psw')[0].value
                 cpassword = document.getElementsByName('cpsw')[0].value
                 if (username == '' || password == '' || cpassword == '') {
-                    alert('Preencha os campos')
+                    alert('Fill in the fields')
                 return
                 }
                 if (password != cpassword) {
-                    alert('As senhas não conferem')
+                    alert('Passwords do not match')
                 return
                 }
 
                 post('http://localhost:8080/signUp', {'username': username, 'password': password}, {'Content-Type': 'application/json'}
                 ).then(response => response.text()).then(data => {
-                    // document.getElementById('result').innerHTML = data;
                     if(data == "User added successfully"){
-                        window.location.href = 'index.html'
+                        window.location.href = 'login.html'
                     }
                 }).catch(error => {
                     console.error('Error:', error);
-                });
-                
-                // alert('Usuário cadastrado com sucesso!')
+                });                
             }
         </script>
 

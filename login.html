@@ -10,26 +10,6 @@
     </head>
     <body class="d-flex align-items-center py-4 bg-body-tertiary">
         <div id="result"></div>
-
-        <!-- <main class="w=100 m-auto form-container">
-            <form>
-                <h1 class="h3 text-center fw-normal">Login</h1>
-                <div class="form-floating">
-                    <input type="text" class="form-control" id="floatingInput" placeholder="Enter Username" name="uname" required/>
-                    <label for="floatingInput"><b>Username</b></label>
-                    
-                </div>
-                <div class="form-floating">
-                    <input type="password" class="form-control" id="floatingPassword" placeholder="Enter Password" name="psw" required/>
-                    <label for="floatingPassword"><b>Password</b></label>
-                </div> -->
-
-                <!-- <button class="btn btn-primary w-100 mt-4 py-2" onclick="confirm()">Confirm</button>
-                <button class="btn btn-primary w-100 mt-4 py-2" onclick="signUp()">Sign Up</button>
-                <button class="btn btn-primary w-100 mt-4 py-2" onclick="showUsers()">Show Users</button>            
-
-            </form>    
-        </main> -->
         <div class="form-container">
             <h1 class="h3 text-center fw-normal">Login</h1> 
             <div class="form-floating">
@@ -45,19 +25,22 @@
             
             <button class="btn btn-primary w-100 mt-4 py-2" onclick="confirm()">Confirm</button>
             <button class="btn btn-primary w-100 mt-4 py-2" onclick="signUp()">Sign Up</button>
-            <button class="btn btn-primary w-100 mt-4 py-2" onclick="goHome()">Home</button>
             
         </div>
         <script>
             const request = (url, params = {}, method = 'GET', headers = {}) => {
-                let options = {method};
-                options.headers = headers;
+                let options = {
+                    method, 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                };
                 if ('GET' === method) {
                     url += '?' + (new URLSearchParams(params)).toString();
                 } else {
                     options.body = JSON.stringify(params);
                 }
-                // alert('url: ' + url)
                 return fetch(url, options); 
             };
             const get = (url, params, headers) => request(url, params, 'GET', headers);
@@ -67,13 +50,11 @@
                 username = document.getElementsByName('uname')[0].value
                 password = document.getElementsByName('psw')[0].value
                 if (username == '' || password == '') {
-                alert('Preencha os campos')
+                    alert('Fill in the fields')
                 return
                 }
-                // prompt('username: ' + username + ' password: ' + password)
                 get('http://localhost:8080/login', {'username': username, 'password': password}).then(response => response.text()).then(data => {
-                    // document.getElementById('result').innerHTML = data;
-                    if(data == "Login successful!"){
+                    if(data == "Success"){
                         window.location.href = 'index.html'
                     }
                     else{
@@ -88,9 +69,6 @@
                 window.location.href = 'signup.html'
             }
 
-            function goHome(){
-                window.location.href = 'index.html'
-            }
         </script>
     </body>
 </html>
