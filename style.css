@@ -6,59 +6,11 @@ html, body{
     width: 100%;
     max-width: 500px;
     margin: 0 auto;
-    margin-top: 100px;
     padding: 1rem;
-    max-height: 300px;
-}
-
-body {
-    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .btn-square {
-    width: 15em; /* Adjust the size as needed */
-    height: 15em; /* Adjust the size as needed */
+    width: 3em; /* Adjust the size as needed */
+    height: 3em; /* Adjust the size as needed */
     padding: 0;
-    position: relative;
-    overflow: hidden;
-    border: none;
-    background: blue;
-    cursor: pointer;
-}
-
-.btn-square::before {
-    content: attr(data-text);
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: attr(bar-height); /* Adjust the height of the bar */
-    background-color: rgba(77, 77, 77, 0.631); /* Adjust the color of the bar */
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.3s ease;
-    transform: translateY(100%);
-}
-
-.btn-square:hover::before {
-    transform: translateY(0);
-}
-
-
-.btn-fav {
-    width: 2em;
-    height: 2em;
-    padding: 0;
-    border: none;
-    background: url('star.svg') center/cover no-repeat;
-    transition: background-image 0.3s ease;
-}
-
-.btn-fav:hover {
-    background-image: url('star-fill.svg');
-}
-
-.btn-fav.filled {
-    background-image: url('star-fill.svg'); /* Yellow star-fill.svg when filled */
 }
