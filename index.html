@@ -70,6 +70,14 @@
     </div>
 
     <script>
+        var username;
+        var loggeIn;
+        let recipesCount = 0;
+        let recipe_names = [];
+        let recipe_cook_times = [];
+        let recipe_ids = [];
+        var tags_checked = [];
+
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
                 method,
@@ -88,90 +96,7 @@
         var tags = ["tag1", "tag2", "tag3","tag4","tag5","tag6","tag7","tag8"];
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
-        var tags_checked = [];
-
-        function displayTags(){
-            document.addEventListener('DOMContentLoaded', function () {
-                var tagsCol = document.getElementById('tagsCol');
-                var tagsCount = 8; // Number of checkboxes you want
-                for (var i = 0; i < tagsCount; i++) {
-                    var tagsDiv = document.createElement('div');
-                    tagsDiv.classList.add('form-check', 'mb-2');
-                    var tag = document.createElement('input');
-                    tag.classList.add('form-check-input');
-                    tag.setAttribute('type', 'checkbox');
-                    tag.setAttribute('id', tags[i]);
-                    tag.setAttribute('data-label', tags[i]);
-                    var label = document.createElement('label');
-                    label.classList.add('form-check-label');
-                    label.setAttribute('for', tags[i]);
-                    label.innerText = tags[i];
-                    tagsDiv.appendChild(tag);
-                    tagsDiv.appendChild(label);
-                    tagsCol.appendChild(tagsDiv);
-                
-                    tag.addEventListener('change', function() {
-                        if(this.checked) tags_checked.push(this.getAttribute('data-label'));
-                        else{
-                            var index = tags_checked.indexOf(this.getAttribute('data-label'));
-                            if(index > -1) tags_checked.splice(index, 1);
-                        }
-                        console.log(tags_checked);
-                    });
-                }
-            });
-        }
         
-        var recipesCount;
-        var recipes = [];
-
-        function confirmFilter(){
-            alert(tags_checked);
-            document.addEventListener('DOMContentLoaded', function () {
-                var recipesRow = document.getElementById('recipesRow');
-                
-                for (var i = 1; i <= recipesCount; i++) {
-                    
-                    var buttonCol = document.createElement('div');
-                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-                    var button = document.createElement('button');
-                    button.classList.add('btn', 'btn-primary', 'btn-square');
-                    button.innerText = 'Recipe ' + i;
-                    recipes.push('Recipe' + i);
-                    button.setAttribute('data-text', tags[(i-1)%tags.length]);
-                    button.setAttribute('onclick', 'getRecipe()');
-                    buttonCol.appendChild(button);
-                    recipesRow.appendChild(buttonCol);
-                }
-            });
-        }
-        
-        var recipe_names;
-        var recipe_cook_times;
-        var recipe_ids;
-        
-        function genRecipesButtons(){
-            document.addEventListener('DOMContentLoaded', function () {
-                // getAllRecipes();
-                var recipesRow = document.getElementById('recipesRow');
-                // recipesCount = recipe_names.length(); // Number of buttons you want
-                recipesCount = 8;
-                for (var i = 1; i <= recipesCount; i++) {
-                    var buttonCol = document.createElement('div');
-                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-                    var button = document.createElement('button');
-                    button.classList.add('btn', 'btn-primary', 'btn-square');
-                    // button.innerText = recipe_names[i];
-                    button.innerText = 'Recipe ' + i;
-                    // recipes.push('Recipe' + i);
-                    // button.setAttribute('data-text', cook_times[i]);
-                    button.setAttribute('data-text', 'Details');
-                    button.setAttribute('onclick', 'showRecipe("Recipe '+ i +' ")');
-                    buttonCol.appendChild(button);
-                    recipesRow.appendChild(buttonCol);
-                }
-            });
-        }
         
         function login() {
             window.location.href = 'login.html';
@@ -191,8 +116,6 @@
             });
         }
 
-        var username;
-        var loggeIn;
         function isLogged() {
             get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
@@ -243,6 +166,86 @@
             window.location.href = 'lists.html';
         }
 
+        function displayTags(){
+            document.addEventListener('DOMContentLoaded', function () {
+                var tagsCol = document.getElementById('tagsCol');
+                var tagsCount = 8; // Number of checkboxes you want
+                for (var i = 0; i < tagsCount; i++) {
+                    var tagsDiv = document.createElement('div');
+                    tagsDiv.classList.add('form-check', 'mb-2');
+                    var tag = document.createElement('input');
+                    tag.classList.add('form-check-input');
+                    tag.setAttribute('type', 'checkbox');
+                    tag.setAttribute('id', tags[i]);
+                    tag.setAttribute('data-label', tags[i]);
+                    var label = document.createElement('label');
+                    label.classList.add('form-check-label');
+                    label.setAttribute('for', tags[i]);
+                    label.innerText = tags[i];
+                    tagsDiv.appendChild(tag);
+                    tagsDiv.appendChild(label);
+                    tagsCol.appendChild(tagsDiv);
+                
+                    tag.addEventListener('change', function() {
+                        if(this.checked) tags_checked.push(this.getAttribute('data-label'));
+                        else{
+                            var index = tags_checked.indexOf(this.getAttribute('data-label'));
+                            if(index > -1) tags_checked.splice(index, 1);
+                        }
+                        console.log(tags_checked);
+                    });
+                }
+            });
+        }
+        
+        function confirmFilter(){
+            alert(tags_checked);
+            document.addEventListener('DOMContentLoaded', function () {
+                var recipesRow = document.getElementById('recipesRow');
+                
+                for (var i = 1; i <= recipesCount; i++) {
+                    
+                    var buttonCol = document.createElement('div');
+                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                    var button = document.createElement('button');
+                    button.classList.add('btn', 'btn-primary', 'btn-square');
+                    button.innerText = 'Recipe ' + i;
+                    recipes.push('Recipe' + i);
+                    button.setAttribute('data-text', tags[(i-1)%tags.length]);
+                    button.setAttribute('onclick', 'getRecipe()');
+                    buttonCol.appendChild(button);
+                    recipesRow.appendChild(buttonCol);
+                }
+            });
+        }
+        
+        function displayRecipes(){
+            document.addEventListener('DOMContentLoaded', function () {
+                getAllRecipes().then(() => {
+                    var recipesRow = document.getElementById('recipesRow');
+                    // recipesCount = recipe_names.length; // Number of buttons you want
+                    // recipesCount = 8;
+                    for (var i = 0; i < recipesCount; i++) {
+                        console.log(i);
+                        var buttonCol = document.createElement('div');
+                        buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                        var button = document.createElement('button');
+                        button.classList.add('btn', 'btn-primary', 'btn-square');
+                        button.innerText = recipe_names[i];
+                        // button.innerText = 'Recipe ' + i;
+                        // recipes.push('Recipe' + i);
+                        button.setAttribute('data-text', `cooking time: ` + recipe_cook_times[i]);
+                        // button.setAttribute('data-text', 'Details');
+                        button.setAttribute('onclick', 'accessRecipe("Recipe '+ i +' ")');
+                        buttonCol.appendChild(button);
+                        recipesRow.appendChild(buttonCol);
+                    }
+                }).catch(error => {
+                    console.error('Error displaying recipes:', error);
+                });
+            });
+        }
+
         function searchRecipes() {
             event.preventDefault();
             search = document.getElementsByName('searched_recipe')[0].value
@@ -271,7 +274,7 @@
             // });
         }
 
-        function showRecipe(recipe_name){
+        function accessRecipe(recipe_name){
             // alert(recipe_name);
             window.location.href = 'recipe.html?recipe=' + recipe_name;
             
@@ -299,10 +302,8 @@
             // });
         }
 
-
-
         function getAllRecipes(){
-            get('http://localhost:8080/allRecipes').then(response => {
+            return get('http://localhost:8080/allRecipes').then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -312,21 +313,25 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-                
-                recipe_names = data.names;
-                recipe_ids = data.ids;
-                recipe_cook_times = data.cook_times;
+                // alert(JSON.stringify(data, null, 2));
 
-                if (!Array.isArray(recipes)) {
+
+                data.forEach(recipe => {
+                    recipe_names.push(recipe.name);
+                    recipe_ids.push(recipe.id);
+                    recipe_cook_times.push(recipe.cookingtime);
+                });
+
+                recipesCount = data.length;
+
+                if (!Array.isArray(recipe_names)) {
                     throw new Error('Invalid recipes format');
                 }
-
-                console.log(recipes);
+                
                 
             }).catch(error => {
                 console.error('Error:', error);
             });
-        
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -334,7 +339,7 @@
         });
 
         displayTags();
-        genRecipesButtons();
+        displayRecipes();
     </script>
 </body>
 </html>

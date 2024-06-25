@@ -44,7 +44,7 @@ body {
 }
 
 .btn-square:hover::before {
-    transform: translateY(0);
+    transform: translateY(0);   
 }
 
 
@@ -53,16 +53,16 @@ body {
     height: 2em;
     padding: 0;
     border: none;
-    background: url('/images/star.svg') center/cover no-repeat;
+    background: url('images/star.svg') center/cover no-repeat;
     transition: background-image 0.3s ease;
 }
 
 .btn-fav:hover {
-    background-image: url('/images/star-fill.svg');
+    background-image: url('images/star-fill.svg');
 }
 
 .btn-fav.filled {
-    background-image: url('/images/star-fill.svg'); /* Yellow star-fill.svg when filled */
+    background-image: url('images/star-fill.svg'); /* Yellow star-fill.svg when filled */
 }
 
 .custom-bg {
