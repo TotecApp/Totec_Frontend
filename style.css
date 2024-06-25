@@ -3,14 +3,78 @@ html, body{
 }
 
 .form-container {
-    width: 100%;
-    max-width: 500px;
+    border: 2px rgb(68, 68, 68) solid;
+    width: 50vw;
+    height: 50vh;
+    /* max-width: 500px; */
     margin: 0 auto;
-    padding: 1rem;
+    margin-top: 100px;
+    padding: 5rem;
+    /* max-height: 300px; */
+}
+
+body {
+    overflow-x: hidden; /* Prevent horizontal scrolling */
 }
 
 .btn-square {
-    width: 3em; /* Adjust the size as needed */
-    height: 3em; /* Adjust the size as needed */
+    width: 15em; /* Adjust the size as needed */
+    height: 15em; /* Adjust the size as needed */
     padding: 0;
+    position: relative;
+    overflow: hidden;
+    border: none;
+    background: blue;
+    cursor: pointer;
+}
+
+.btn-square::before {
+    content: attr(data-text);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: attr(bar-height); /* Adjust the height of the bar */
+    background-color: rgba(77, 77, 77, 0.631); /* Adjust the color of the bar */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.3s ease;
+    transform: translateY(100%);
+}
+
+.btn-square:hover::before {
+    transform: translateY(0);
+}
+
+
+.btn-fav {
+    width: 2em;
+    height: 2em;
+    padding: 0;
+    border: none;
+    background: url('/images/star.svg') center/cover no-repeat;
+    transition: background-image 0.3s ease;
+}
+
+.btn-fav:hover {
+    background-image: url('/images/star-fill.svg');
+}
+
+.btn-fav.filled {
+    background-image: url('/images/star-fill.svg'); /* Yellow star-fill.svg when filled */
+}
+
+.custom-bg {
+    background-color: #fdcc6b !important;
+
+}
+
+.custom-center-bg {
+    background-color: #ffebca !important;
+
+}
+
+.custom-navbar-bg {
+    background-color: #ffa600 !important;
 }

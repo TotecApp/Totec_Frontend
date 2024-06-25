@@ -44,20 +44,20 @@
     </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-secondary bg-secondary w-100">
+    <nav class="navbar navbar-expand-lg navbar-secondary custom-navbar-bg w-100">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="navbar-brand text-white fs-5" style="margin-left: 20px;" href="#"  onclick="window.location.href = 'index.html'">Totec</a>
+            <a class="navbar-brand text-white fw-bolder fs-5" style="margin-left: 20px;" href="#" onclick="window.location.href = 'index.html'">Totec</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto mb-lg-0 d-flex align-items-center">
                     <li class="nav-item active">
-                        <a class="nav-link text-white fs-5">Recipe</a>
+                        <a class="nav-link text-white fw-bolder fs-5">Recipe</a>
                     </li>
                     <li class="nav-item dropdown">
                         <div class="dropdown">
-                            <button class="btn dropdown-toggle text-white fs-5" href="#" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn dropdown-toggle text-white fw-bolder fs-5" href="#" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span id="username"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
@@ -71,9 +71,9 @@
                         </div>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0 d-flex align-items-center">
+                <form class="form-inline my-2 my-lg-0 d-flex align-items-center" onsubmit="searchRecipes(event)">
                     <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched_recipe" style="width: 12rem;">
-                    <button class="btn btn-outline-success my-2 my-sm-0 bg-success text-white" type="submit" onclick="searchRecipes()">Search</button>
+                    <button class="btn btn-outline-success my-2 my-sm-0 bg-success text-white" type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -81,13 +81,13 @@
     
     <div class="d-flex flex-column" style="min-height: 90em;">
         <div class="row flex-grow-1">
-            <div class="col bg-warning-subtle"></div>
-            <div class="col-8 bg-light p-5 d-flex justify-content-center">
+            <div class="col custom-bg"></div>
+            <div class="col-8 custom-center-bg p-5 d-flex justify-content-center">
                 <div class="container">
                     <div class="container">
-                        <div class="d-flex flex-row justify-content-between align-items-center pb-4 gap-5 mb-4">
+                        <div class="d-flex flex-row align-items-center pb-4 gap-3 mb-4">
                             <div class="h1" id="recipeName">Recipe Name</div>
-                            <button class="btn-fav" onclick="addToFavorites()"></button>
+                            <button class="btn-fav mb-1" onclick="addToFavorites()"></button>
                         </div>
                     </div>
 
@@ -97,7 +97,7 @@
                                 <div class="row">
                                     <div class="flex-column justify-content-lg-start">
                                         <h1>Ingredients:</h1>
-                                        <ul id="ingredients">
+                                        <ul class="fs-3" id="ingredients">
                                             <!-- Ingredients will be inserted here dynamically -->
                                         </ul>
                                     </div>
@@ -105,7 +105,7 @@
                                 <div class="row mt-5">
                                     <div class="flex-column justify-content-lg-start">
                                         <h1>Instructions:</h1>
-                                        <ul id="instructions">
+                                        <ul class="fs-3" id="instructions">
                                             <!-- Instructions will be inserted here dynamically -->
                                         </ul>
                                     </div>
@@ -118,7 +118,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col bg-warning-subtle"></div>
+            <div class="col custom-bg"></div>
         </div>
     </div>
 
@@ -141,8 +141,6 @@
 
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
-
-        document.getElementById("recipeName").innerHTML = "Test";
 
         function login() {
             window.location.href = 'login.html';
@@ -214,9 +212,10 @@
             window.location.href = 'lists.html';
         }
 
-        function searchRecipes() {
-            recipe = document.getElementsByName('searched_recipe')[0].value
-            alert(recipe);
+        function searchRecipes(event) {
+            event.preventDefault();
+            search = document.getElementsByName('searched_recipe')[0].value
+            window.location.href = 'searches.html?search=' + search;
             // get('http://localhost:8080/searchRecipes').then(response => {
             //     if (response.ok) {
             //         return response.json();
@@ -274,14 +273,70 @@
             });
         }
 
+        function getRecipeInfo(){
+            const ingredientsList = document.getElementById("ingredients");
+            const instructionsList = document.getElementById("instructions");
+            const ingredients = ["Ingredient 1", "Ingredient 2", "Ingredient 3"];
+            const instructions = ["Instruction 1", "Instruction 2", "Instruction 3"];
+            
+            ingredients.forEach(ingredient => {
+                const li = document.createElement("li");
+                li.appendChild(document.createTextNode(ingredient));
+                ingredientsList.appendChild(li);
+            });
+    
+            instructions.forEach(instruction => {
+                const li = document.createElement("li");
+                li.appendChild(document.createTextNode(instruction));
+                instructionsList.appendChild(li);
+            });
+            
+            // var params = {
+            //     'recipe': recipeName
+            // };
+            // get('http://localhost:8080/getRecipeInfo', params).then(response => {
+            //     if (response.ok) {
+            //         return response.json();
+            //     } else {
+            //         throw new Error('Network response was not ok');
+            //     }
+            // }).then(data => {
+            //     if (!data || typeof data !== 'object') {
+            //         throw new Error('Invalid data format');
+            //         }
+                    
+            //     // const ingredients = data.ingredients;
+            //     // const instructions = data.instructions;
+
+
+            //     if (!Array.isArray(ingredients) || !Array.isArray(instructions) || typeof image !== 'string') {
+            //         throw new Error('Invalid data format');
+            //     }
+
+
+            //     // document.querySelector("img").src = image;
+                
+            // }).catch(error => {
+            //     console.error('Error:', error);
+            // });
+        }
+
+        var recipe_name;
         document.addEventListener('DOMContentLoaded', () => {
             isLogged();
+        
+            const urlParams = new URLSearchParams(window.location.search);
+            recipe_name = urlParams.get('recipe');
+            document.getElementById("recipeName").innerHTML = recipe_name;
+
             const btnFav = document.querySelector('.btn-fav');
             btnFav.addEventListener('click', function() {
                 btnFav.classList.toggle('filled');
             });
-        });
+            getRecipeInfo();
 
+        });
+            
 
     </script>
 </body>

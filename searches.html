@@ -9,20 +9,20 @@
     <title>Search results</title>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-secondary bg-secondary w-100">
+    <nav class="navbar navbar-expand-lg navbar-secondary custom-navbar-bg w-100">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="navbar-brand text-white fs-5" style="margin-left: 20px;" href="#" onclick="window.location.href='index.html'">Totec</a>
+            <a class="navbar-brand text-white fw-bolder fs-5" style="margin-left: 20px;" href="#" onclick="window.location.href = 'index.html'">Totec</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto mb-lg-0 d-flex align-items-center">
                     <li class="nav-item active">
-                        <a class="nav-link text-white fs-5">Search results</a>
+                        <a class="nav-link text-white fw-bolder fs-5">Search results</a>
                     </li>
                     <li class="nav-item dropdown">
                         <div class="dropdown">
-                            <button class="btn dropdown-toggle text-white fs-5" href="#" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                            <button class="btn dropdown-toggle text-white fw-bolder fs-5" href="#" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                 <span id="username"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
@@ -47,15 +47,19 @@
 
     <div class="d-flex flex-column" style="min-height: 90em;">
         <div class="row flex-grow-1">
-            <div class="col bg-warning-subtle"></div>
-            <div class="col-8 bg-light p-5 d-flex justify-content-center">
+            <div class="col custom-bg"></div>
+            <div class="col-8 custom-center-bg p-5 d-flex justify-content-center">
                 <div class="container">
+                    <div class="d-flex flex-row gap-3 align-items-center">
+                        <h1 class="text-center fw-light">Search results for:</h1>
+                        <div class="fs-1 mb-1 fw-light fst-italic" id="search_string"></div>
+                    </div>
                     <div class="row" id="buttonRow">
                         <!-- Buttons will be inserted here dynamically -->
                     </div>
                 </div>
             </div>
-            <div class="col bg-warning-subtle"></div>
+            <div class="col custom-bg"></div>
         </div>
     </div>
 
@@ -78,24 +82,6 @@
 
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
-
-        function genRecipesButtons(){
-            document.addEventListener('DOMContentLoaded', function () {
-                var buttonRow = document.getElementById('buttonRow');
-                var buttonsCount = 12; // Number of buttons you want
-                for (var i = 1; i <= buttonsCount; i++) {
-                    var buttonCol = document.createElement('div');
-                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-                    var button = document.createElement('button');
-                    button.classList.add('btn', 'btn-primary', 'btn-square');
-                    button.innerText = 'Recipe ' + i;
-                    button.setAttribute('onclick', 'getRecipe()');
-                    button.setAttribute('data-text', 'Details');
-                    buttonCol.appendChild(button);
-                    buttonRow.appendChild(buttonCol);
-                }
-            });
-        }
         
         function logout() {
             get('http://localhost:8080/logout').then(response => response.text()).then(data => {
@@ -149,7 +135,6 @@
             });
         }
 
-
         function showUserProfile(){
             window.location.href = 'profile.html';
         }
@@ -166,7 +151,28 @@
             window.location.href = 'index.html';
         }
 
-        
+        function genResults(){
+            document.addEventListener('DOMContentLoaded', function () {
+                const urlParams = new URLSearchParams(window.location.search);
+                searched = urlParams.get('search');
+                searched = " " + searched;
+                document.getElementById("search_string").innerHTML = searched;
+
+                var buttonRow = document.getElementById('buttonRow');
+                var buttonsCount = 12; // Number of buttons you want
+                for (var i = 1; i <= buttonsCount; i++) {
+                    var buttonCol = document.createElement('div');
+                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                    var button = document.createElement('button');
+                    button.classList.add('btn', 'btn-primary', 'btn-square');
+                    button.innerText = 'Recipe ' + i;
+                    button.setAttribute('onclick', 'showRecipe("Recipe '+ i +' ")');
+                    button.setAttribute('data-text', 'Details');
+                    buttonCol.appendChild(button);
+                    buttonRow.appendChild(buttonCol);
+                }
+            });
+        }
 
         function searchRecipes() {
             recipe = document.getElementsByName('searched_recipe')[0].value
@@ -195,7 +201,9 @@
             // });
         }
 
-        function showRecipes() {
+        function showRecipe(recipe_name) {
+            window.location.href = 'recipe.html?recipe=' + recipe_name;
+
             get('http://localhost:8080/showRecipes').then(response => {
                 if (response.ok) {
                     return response.json();
@@ -249,8 +257,8 @@
         document.addEventListener('DOMContentLoaded', () => {
             isLogged();
         });
+        genResults();
 
-        genRecipesButtons();
     </script>
 </body>
 </html>
