@@ -50,9 +50,13 @@
             <div class="col-8 custom-center-bg p-5 d-flex justify-content-center">
                 <div class="container">
                     <div class="container">
-                        <div class="d-flex flex-row align-items-center pb-4 gap-3 mb-4">
+                        <div class="d-flex flex-row align-items-center">
                             <div class="h1" id="recipeName">Recipe Name</div>
-                            <button class="btn-fav mb-1" onclick="addToFavorites()"></button>
+                            <button class="btn-fav mb-1 mx-2" onclick="addToFavorites()"></button>
+                        </div>
+                        <div class="d-flex flex-row align-items-center pb-4 gap-3 mb-4">
+                            <div class="fs-5 fst-italic" id="cookingTime"></div>
+                            <div class="fs-5 fst-italic" id="servings"></div>
                         </div>
                     </div>
 
@@ -70,9 +74,9 @@
                                 <div class="row mt-5">
                                     <div class="flex-column justify-content-lg-start">
                                         <h1>Instructions:</h1>
-                                        <ul class="fs-3" id="instructions">
+                                        <ol class="fs-3" id="instructions">
                                             <!-- Instructions will be inserted here dynamically -->
-                                        </ul>
+                                        </ol>
                                     </div>
                                 </div>
                             </div>
@@ -88,6 +92,14 @@
     </div>
 
     <script>
+        let username;
+        let loggedIn;
+        let recipe_name;
+        let ingredients = [];
+        let instructions = [];
+        let cookingtime = 0;
+        let servings = 0;
+
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
                 method,
@@ -103,7 +115,6 @@
             }
             return fetch(url, options);
         };
-
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
 
@@ -125,8 +136,6 @@
             });
         }
  
-        var username;
-        var loggedIn;
         function isLogged() {
             get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
@@ -241,52 +250,52 @@
         function getRecipeInfo(){
             const ingredientsList = document.getElementById("ingredients");
             const instructionsList = document.getElementById("instructions");
-            const ingredients = ["Ingredient 1", "Ingredient 2", "Ingredient 3"];
-            const instructions = ["Instruction 1", "Instruction 2", "Instruction 3"];
-            
-            ingredients.forEach(ingredient => {
-                const li = document.createElement("li");
-                li.appendChild(document.createTextNode(ingredient));
-                ingredientsList.appendChild(li);
-            });
-    
-            instructions.forEach(instruction => {
-                const li = document.createElement("li");
-                li.appendChild(document.createTextNode(instruction));
-                instructionsList.appendChild(li);
-            });
-            
-            // var params = {
-            //     'recipe': recipeName
-            // };
-            // get('http://localhost:8080/getRecipeInfo', params).then(response => {
-            //     if (response.ok) {
-            //         return response.json();
-            //     } else {
-            //         throw new Error('Network response was not ok');
-            //     }
-            // }).then(data => {
-            //     if (!data || typeof data !== 'object') {
-            //         throw new Error('Invalid data format');
-            //         }
-                    
-            //     // const ingredients = data.ingredients;
-            //     // const instructions = data.instructions;
+            const cookingTime = document.getElementById("cookingTime");
+            const servings =  document.getElementById("servings");
 
+            return get('http://localhost:8080/recipeInfo', {"recipe_name": recipe_name}).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
 
-            //     if (!Array.isArray(ingredients) || !Array.isArray(instructions) || typeof image !== 'string') {
-            //         throw new Error('Invalid data format');
-            //     }
-
-
-            //     // document.querySelector("img").src = image;
+                ingredients = data[0].ingredients.split(',').map(ingredient => ingredient.trim());
+                instructions = data[0].instructions.split(',').map(instruction => instruction.trim()); //split instructions from data
+                instructions = instructions[0].split(/\d+\./).filter(instruction => instruction.trim() !== ''); //split instructions from instructions array
                 
-            // }).catch(error => {
-            //     console.error('Error:', error);
-            // });
+                cookingTime.textContent = "Cooking time: " + data[0].cookingtime + "min.";
+                servings.textContent = "Servings: " + data[0].servings;
+
+                ingredientsList.innerHTML = '';
+                instructionsList.innerHTML = '';
+
+                ingredients.forEach(ingredient => {
+                    const li = document.createElement("li");
+                    li.classList.add("fs-4");
+                    li.textContent = ingredient;
+                    ingredientsList.appendChild(li);
+                });
+
+                instructions.forEach((instruction, index) => {
+                    const li = document.createElement("li");
+                    li.classList.add("fs-4");
+                    li.textContent = instruction.trim();
+                    instructionsList.appendChild(li);
+                });
+                
+            
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
         }
 
-        var recipe_name;
+
         document.addEventListener('DOMContentLoaded', () => {
             isLogged();
         

@@ -75,7 +75,9 @@
         let recipesCount = 0;
         let recipe_names = [];
         let recipe_cook_times = [];
+        let recipe_servings = [];
         let recipe_ids = [];
+        
         var tags_checked = [];
 
         const request = (url, params = {}, method = 'GET', headers = {}) => {
@@ -226,17 +228,15 @@
                     // recipesCount = recipe_names.length; // Number of buttons you want
                     // recipesCount = 8;
                     for (var i = 0; i < recipesCount; i++) {
-                        console.log(i);
                         var buttonCol = document.createElement('div');
                         buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                        
                         var button = document.createElement('button');
                         button.classList.add('btn', 'btn-primary', 'btn-square');
                         button.innerText = recipe_names[i];
-                        // button.innerText = 'Recipe ' + i;
-                        // recipes.push('Recipe' + i);
-                        button.setAttribute('data-text', `cooking time: ` + recipe_cook_times[i]);
-                        // button.setAttribute('data-text', 'Details');
-                        button.setAttribute('onclick', 'accessRecipe("Recipe '+ i +' ")');
+                        button.setAttribute('data-cooking-time', `${recipe_cook_times[i]}`);
+                        button.setAttribute('data-servings', `${recipe_servings[i]}`);
+                        button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
                         buttonCol.appendChild(button);
                         recipesRow.appendChild(buttonCol);
                     }
@@ -318,8 +318,9 @@
 
                 data.forEach(recipe => {
                     recipe_names.push(recipe.name);
-                    recipe_ids.push(recipe.id);
                     recipe_cook_times.push(recipe.cookingtime);
+                    recipe_servings.push(recipe.servings);
+                    recipe_ids.push(recipe.id);
                 });
 
                 recipesCount = data.length;
