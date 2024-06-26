@@ -95,6 +95,7 @@
         let username;
         let loggedIn;
         let recipe_name;
+        let recipe_id;
         let ingredients = [];
         let instructions = [];
         let cookingtime = 0;
@@ -214,37 +215,67 @@
             // });
         }
 
-        function addToFavorites(){
-            if(!loggedIn){
-                alert("You must be logged in to add a recipe to your favorites");
-                return;
-            }
-            var params = {
-                'username': username,
-                'recipe': document.getElementById("recipeName").innerHTML
-            };
-            alert(JSON.stringify(params));
-            post('http://localhost:8080/addToFavorites', params).then(response => {
+        async function getUserId() {
+            try {
+                const response = await get(`http://localhost:8080/getUserId`, { username });
+                
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
                 }
-                return response.json();
-            }).then(data => {
-                if (!data || typeof data !== 'object') {
-                    throw new Error('Invalid data format');
+                
+                const data = await response.text();
+                return data;  // Return the user ID
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;  // Rethrow the error to be caught by the caller
+            }
+        }
+
+        async function getRecipeId() {
+            try {
+                const response = await get(`http://localhost:8080/getRecipeId`, { "recipe_name": recipe_name });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
                 
-                const recipes = data.recipes;
-                
-                if (!Array.isArray(recipes)) {
-                    throw new Error('Invalid recipes format');
+                const data = await response.text();
+                return data;  // Return the recipe ID
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;  // Rethrow the error to be caught by the caller
+            }
+        }
+
+        async function addToFavorites() {
+            if (!loggedIn) {
+                alert("You must be logged in to add a recipe to your favorites");
+                return;
+            }
+
+            try {
+                const userId = await getUserId();
+                const recipeId = await getRecipeId();
+
+                if (userId === '-1' || recipeId === '-1') return;
+
+                const params = {
+                    'userId': parseInt(userId, 10),
+                    'recipeId': parseInt(recipeId, 10)
+                };
+
+                const response = await request('http://localhost:8080/addToFavorites', params, 'POST');
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('Error response text:', errorText);
+                    throw new Error('Could not add to favorites');
+                    
                 }
 
-                console.log(recipes);
-                
-            }).catch(error => {
+            } catch (error) {
                 console.error('Error:', error);
-            });
+            }
         }
 
         function getRecipeInfo(){
@@ -263,7 +294,7 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-
+                
                 ingredients = data[0].ingredients.split(',').map(ingredient => ingredient.trim());
                 instructions = data[0].instructions.split(',').map(instruction => instruction.trim()); //split instructions from data
                 instructions = instructions[0].split(/\d+\./).filter(instruction => instruction.trim() !== ''); //split instructions from instructions array
@@ -287,14 +318,11 @@
                     li.textContent = instruction.trim();
                     instructionsList.appendChild(li);
                 });
-                
-            
-                
+
             }).catch(error => {
                 console.error('Error:', error);
             });
         }
-
 
         document.addEventListener('DOMContentLoaded', () => {
             isLogged();
@@ -310,7 +338,7 @@
             getRecipeInfo();
 
         });
-            
+        
 
     </script>
 </body>
