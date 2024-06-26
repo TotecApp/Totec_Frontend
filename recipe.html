@@ -296,15 +296,15 @@
                 }
                 
                 ingredients = data[0].ingredients.split(',').map(ingredient => ingredient.trim());
-                instructions = data[0].instructions.split(',').map(instruction => instruction.trim()); //split instructions from data
-                instructions = instructions[0].split(/\d+\./).filter(instruction => instruction.trim() !== ''); //split instructions from instructions array
+                instructions = data[0].instructions.split(/\d+\./).filter(instruction => instruction.trim() !== '');
+                instructions = instructions.map(instruction => instruction.trim());
+                alert(instructions);
                 
                 cookingTime.textContent = "Cooking time: " + data[0].cookingtime + "min.";
                 servings.textContent = "Servings: " + data[0].servings;
 
                 ingredientsList.innerHTML = '';
                 instructionsList.innerHTML = '';
-
                 ingredients.forEach(ingredient => {
                     const li = document.createElement("li");
                     li.classList.add("fs-4");
