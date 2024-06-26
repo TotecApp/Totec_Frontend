@@ -89,6 +89,12 @@
                         alert("Success")
                         window.location.href = 'login.html'
                     }
+                    else if(data == "User already exists"){
+                        alert("User already exists")
+                    }
+                    else{
+                        alert("Error")
+                    }
                 }).catch(error => {
                     console.error('Error:', error);
                 });                
