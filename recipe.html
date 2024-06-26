@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="col" style="max-width: 300px; max-height: 300px;">
-                                <img src="https://via.placeholder.com/300" class="img-fluid" alt="Responsive image">
+                                <img id="recipeImage" class="img-fluid" alt="Responsive image">
                             </div>
                         </div>
                     </div>
@@ -283,6 +283,7 @@
             const instructionsList = document.getElementById("instructions");
             const cookingTime = document.getElementById("cookingTime");
             const servings =  document.getElementById("servings");
+            const img = document.getElementById("recipeImage");
 
             return get('http://localhost:8080/recipeInfo', {"recipe_name": recipe_name}).then(response => {
                 if (response.ok) {
@@ -294,12 +295,12 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-                
+
+                img.src = "images/" + data[0].image;
+
                 ingredients = data[0].ingredients.split(',').map(ingredient => ingredient.trim());
                 instructions = data[0].instructions.split(/\d+\./).filter(instruction => instruction.trim() !== '');
                 instructions = instructions.map(instruction => instruction.trim());
-                alert(instructions);
-                
                 cookingTime.textContent = "Cooking time: " + data[0].cookingtime + "min.";
                 servings.textContent = "Servings: " + data[0].servings;
 
