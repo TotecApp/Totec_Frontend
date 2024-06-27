@@ -76,6 +76,7 @@
         let recipe_names = [];
         let recipe_cook_times = [];
         let recipe_servings = [];
+        let recipe_images = [];
         let recipe_ids = [];
         
         var tags_checked = [];
@@ -146,7 +147,7 @@
                     document.getElementById("lists").style.display = "block";
                     document.getElementById("signup").style.display = "none";
                 } else {
-                    document.getElementById("username").innerHTML = "Usuário";
+                    document.getElementById("username").innerHTML = "User";
                     document.getElementById("login").style.display = "block";
                     document.getElementById("profile").style.display = "none";
                     document.getElementById("logout").style.display = "none";
@@ -225,8 +226,6 @@
             document.addEventListener('DOMContentLoaded', function () {
                 getAllRecipes().then(() => {
                     var recipesRow = document.getElementById('recipesRow');
-                    // recipesCount = recipe_names.length; // Number of buttons you want
-                    // recipesCount = 8;
                     for (var i = 0; i < recipesCount; i++) {
                         var buttonCol = document.createElement('div');
                         buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
@@ -236,6 +235,12 @@
                         button.innerText = recipe_names[i];
                         button.setAttribute('data-cooking-time', `${recipe_cook_times[i]}`);
                         button.setAttribute('data-servings', `${recipe_servings[i]}`);
+                        button.style.backgroundImage = `url('${recipe_images[i]}')`;
+                        button.style.backgroundSize = 'cover';
+                        button.style.backgroundPosition = 'center';
+                        button.style.color = 'white'; // Ensure text is visible
+                        button.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+                        console.log(recipe_images[i]);
                         button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
                         buttonCol.appendChild(button);
                         recipesRow.appendChild(buttonCol);
@@ -275,31 +280,7 @@
         }
 
         function accessRecipe(recipe_name){
-            // alert(recipe_name);
-            window.location.href = 'recipe.html?recipe=' + recipe_name;
-            
-            // get('http://localhost:8080/recipe').then(response => {
-            //     if (response.ok) {
-            //         return response.json();
-            //     } else {
-            //         throw new Error('Network response was not ok');
-            //     }
-            // }).then(data => {
-            //     if (!data || typeof data !== 'object') {
-            //         throw new Error('Invalid data format');
-            //     }
-                
-            //     const recipe = data.recipe;
-                
-            //     if (!Array.isArray(recipe)) {
-            //         throw new Error('Invalid recipe format');
-            //     }
-
-            //     console.log(recipe);
-                
-            // }).catch(error => {
-            //     console.error('Error:', error);
-            // });
+            window.location.href = 'recipe.html?recipe=' + recipe_name;            
         }
 
         function getAllRecipes(){
@@ -320,6 +301,7 @@
                     recipe_names.push(recipe.name);
                     recipe_cook_times.push(recipe.cookingtime);
                     recipe_servings.push(recipe.servings);
+                    recipe_images.push("images/" + recipe.image);
                     recipe_ids.push(recipe.id);
                 });
 

@@ -85,8 +85,7 @@
 
                 post('http://localhost:8080/signUp', {'username': username, 'password': password}, {'Content-Type': 'application/json'}
                 ).then(response => response.text()).then(data => {
-                    if(data == "User added successfully"){
-                        alert("Success")
+                    if(data == "Success"){
                         window.location.href = 'login.html'
                     }
                 }).catch(error => {
