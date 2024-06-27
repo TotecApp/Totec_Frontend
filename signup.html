@@ -88,6 +88,9 @@
                     if(data == "Success"){
                         window.location.href = 'login.html'
                     }
+                    else{
+                        alert(data);
+                    }
                 }).catch(error => {
                     console.error('Error:', error);
                 });                

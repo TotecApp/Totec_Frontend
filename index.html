@@ -49,7 +49,7 @@
     <div class="d-flex flex-column" style="min-height: 90em;">
         <div class="row flex-grow-1">
             <div class="col custom-bg" style="margin-left:12px;"> <!--Left column-->
-                <div class="fs-2">Filters</div>
+                <div class="d-flex justify-content-center fs-2">Filters</div>
                 <div class="container">
                     <div class="column" id="tagsCol"></div>
                 </div>
@@ -96,7 +96,7 @@
             }
             return fetch(url, options);
         };
-        var tags = ["tag1", "tag2", "tag3","tag4","tag5","tag6","tag7","tag8"];
+        var tags = ["vegetarian", "gluten free", "desert","chicken","pork"];
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
         
@@ -172,7 +172,7 @@
         function displayTags(){
             document.addEventListener('DOMContentLoaded', function () {
                 var tagsCol = document.getElementById('tagsCol');
-                var tagsCount = 8; // Number of checkboxes you want
+                var tagsCount = tags.length; // Number of checkboxes you want
                 for (var i = 0; i < tagsCount; i++) {
                     var tagsDiv = document.createElement('div');
                     tagsDiv.classList.add('form-check', 'mb-2');
@@ -240,7 +240,6 @@
                         button.style.backgroundPosition = 'center';
                         button.style.color = 'white'; // Ensure text is visible
                         button.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
-                        console.log(recipe_images[i]);
                         button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
                         buttonCol.appendChild(button);
                         recipesRow.appendChild(buttonCol);
@@ -282,7 +281,7 @@
         function accessRecipe(recipe_name){
             window.location.href = 'recipe.html?recipe=' + recipe_name;            
         }
-
+        
         function getAllRecipes(){
             return get('http://localhost:8080/allRecipes').then(response => {
                 if (response.ok) {

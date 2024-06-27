@@ -44,7 +44,6 @@
             </div>
         </div>
     </nav>
-    
 
     <div class="d-flex flex-column" style="min-height: 90em;">
         <div class="row flex-grow-1">
@@ -61,6 +60,16 @@
     </div>
 
     <script>
+        let username;
+        let loggedIn;
+        let userId;
+        let favoritesCount = 0;
+        let favorite_names = [];
+        let favorite_cook_times = [];
+        let favorite_servings = [];
+        let favorite_images = [];
+        let favorite_ids = [];
+
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
                 method, 
@@ -80,23 +89,74 @@
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
 
-        function genRecipesButtons(){
-            document.addEventListener('DOMContentLoaded', function () {
-                var buttonRow = document.getElementById('buttonRow');
-                var buttonsCount = 12; // Number of buttons you want
-                for (var i = 1; i <= buttonsCount; i++) {
-                    var buttonCol = document.createElement('div');
-                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-                    var button = document.createElement('button');
-                    button.classList.add('btn', 'btn-primary', 'btn-square');
-                    button.innerText = 'Recipe ' + i;
-                    button.setAttribute('data-text', 'Details');
-                    buttonCol.appendChild(button);
-                    buttonRow.appendChild(buttonCol);
+        async function getUserId() {
+            if(!loggedIn) return null
+            try {
+                const response = await get(`http://localhost:8080/getUserId`, { username });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
                 }
-            });
+                
+                const data = await response.text();
+                return data;  // Return the user ID
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;  // Rethrow the error to be caught by the caller
+            }
+        }
+
+        function displayFavorites(){
+            var buttonRow = document.getElementById('buttonRow');
+            var buttonsCount = favoritesCount; // Number of buttons you want
+            for (var i = 0; i < buttonsCount; i++) {
+                var buttonCol = document.createElement('div');
+                buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                var button = document.createElement('button');
+                button.classList.add('btn', 'btn-primary', 'btn-square');
+                button.innerText = favorite_names[i];
+                button.setAttribute('data-cooking-time', `${favorite_cook_times[i]}`);
+                button.setAttribute('data-servings', `${favorite_servings[i]}`);
+                button.style.backgroundImage = `url('${favorite_images[i]}')`;
+                button.style.backgroundSize = 'cover';
+                button.style.backgroundPosition = 'center';
+                button.setAttribute('onclick', 'accessRecipe("' + favorite_names[i] + '")');
+                buttonCol.appendChild(button);
+                buttonRow.appendChild(buttonCol);
+            }
         }
         
+        async function getAllFavorites(){
+            return get('http://localhost:8080/allFavorites', {"userId": parseInt(userId)}).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+
+                data.forEach(favorite => {
+                    favorite_names.push(favorite.name);
+                    favorite_cook_times.push(favorite.cookingtime);
+                    favorite_servings.push(favorite.servings);
+                    favorite_images.push("images/" + favorite.image);
+                    favorite_ids.push(favorite.id);
+                });
+                favoritesCount = data.length;
+
+                if (!Array.isArray(favorite_names)) {
+                    throw new Error('Invalid recipes format');
+                }
+                
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         function logout() {
             get('http://localhost:8080/logout').then(response => response.text()).then(data => {
                 if (data === "Logout successful") {
@@ -108,7 +168,7 @@
         }
 
         function isLogged() {
-            get('http://localhost:8080/isLogged').then(response => {
+            return get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -119,8 +179,8 @@
                     throw new Error('Invalid data format');
                 }
                 
-                const loggedIn = data.loggedIn;
-                const username = data.username;
+                loggedIn = data.loggedIn;
+                username = data.username;
                 
                 if (typeof loggedIn === 'undefined' || typeof username === 'undefined') {
                     throw new Error('Missing expected properties in the response data');
@@ -135,7 +195,7 @@
                     document.getElementById("lists").style.display = "block";
                     document.getElementById("signup").style.display = "none";
                 } else {
-                    document.getElementById("username").innerHTML = "Usuário";
+                    document.getElementById("username").innerHTML = "User";
                     document.getElementById("login").style.display = "block";
                     document.getElementById("profile").style.display = "none";
                     document.getElementById("logout").style.display = "none";
@@ -148,7 +208,6 @@
                 console.error('Error:', error);
             });
         }
-
 
         function showUserProfile(){
             window.location.href = 'profile.html';
@@ -168,7 +227,7 @@
 
         function searchRecipes() {
             recipe = document.getElementsByName('searched_recipe')[0].value
-            alert(recipe);
+        
             // get('http://localhost:8080/searchRecipes').then(response => {
             //     if (response.ok) {
             //         return response.json();
@@ -193,61 +252,17 @@
             // });
         }
 
-        function showRecipes() {
-            get('http://localhost:8080/showRecipes').then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            }).then(data => {
-                if (!data || typeof data !== 'object') {
-                    throw new Error('Invalid data format');
-                }
-                
-                const recipes = data.recipes;
-                
-                if (!Array.isArray(recipes)) {
-                    throw new Error('Invalid recipes format');
-                }
-
-                console.log(recipes);
-                
-            }).catch(error => {
-                console.error('Error:', error);
-            });
+        function accessRecipe(recipe_name){
+            window.location.href = 'recipe.html?recipe=' + recipe_name;            
         }
 
-        function getRecipe(){
-            get('http://localhost:8080/recipe').then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            }).then(data => {
-                if (!data || typeof data !== 'object') {
-                    throw new Error('Invalid data format');
-                }
-                
-                const recipe = data.recipe;
-                
-                if (!Array.isArray(recipe)) {
-                    throw new Error('Invalid recipe format');
-                }
-
-                console.log(recipe);
-                
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            isLogged();
+        document.addEventListener('DOMContentLoaded', async () => {
+            await isLogged();
+            userId = await getUserId(username);
+            await getAllFavorites(); 
+            displayFavorites();
         });
 
-        genRecipesButtons();
     </script>
 </body>
 </html>
