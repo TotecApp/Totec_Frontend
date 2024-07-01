@@ -69,6 +69,54 @@
         </div>
     </div>
 
+    <div class="modal fade" id="addRecipeModal" tabindex="-1" aria-labelledby="addRecipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content custom-bg">
+            <div class="modal-header">
+                <h5 class="modal-title float-start" id="addRecipeModalLabel">Add Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="align-middle" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="addRecipe(event)" novalidate>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-3" id="recipeName" placeholder="Recipe name" name="recipeName" required>
+                        <label for="recipeName"><b>Recipe name</b></label>
+                        <div class="invalid-feedback">Please provide a recipe name.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="recipeImage" placeholder="Recipe Image" name="recipeImage" required>
+                        <label for="recipeImage"><b>Recipe Image</b></label>
+                        <div class="invalid-feedback">Please provide a recipe image URL.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="ingredients" placeholder="Ingredients" name="ingredients" required>
+                        <label for="ingredients"><b>Ingredients</b></label>
+                        <div class="invalid-feedback">Please provide ingredients.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="instructions" placeholder="Instructions" name="instructions" required>
+                        <label for="instructions"><b>Instructions</b></label>
+                        <div class="invalid-feedback">Please provide instructions.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="cookingTime" placeholder="Cooking Time" name="cookingTime" required>
+                        <label for="cookingTime"><b>Cooking Time</b></label>
+                        <div class="invalid-feedback">Please provide the cooking time.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="servings" placeholder="Servings" name="servings" required>
+                        <label for="servings"><b>Servings</b></label>
+                        <div class="invalid-feedback">Please provide the number of servings.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>                
+            </div>
+        </div>
+        </div>
+    </div>
+    
     <script>
         var username;
         var loggeIn;
@@ -222,6 +270,80 @@
             });
         }
         
+        function addRecipe(event){
+            event.preventDefault();
+            var form = event.target;
+            
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');
+            } else {
+                params = {
+                    'recipeName': document.getElementById("recipeName").value,
+                    'recipeImage': document.getElementById("recipeImage").value, 
+                    'ingredients': document.getElementById("ingredients").value,
+                    'instructions': document.getElementById("instructions").value,
+                    'cookingTime': document.getElementById("cookingTime").value,
+                    'servings': document.getElementById("servings").value
+                }
+                post('http://localhost:8080/addRecipe', params, {'Content-Type': 'application/json'}
+                ).then(response => response.text()).then(data => {
+                    if(data == "Success"){
+                        displayTags();
+                        displayRecipes();
+                    }
+                    else{
+                        alert(data);
+                    }
+                }).catch(error => {
+                    console.error('Error:', error);
+                });  
+            }
+        }
+
+        function displayAddRecipeBtn(){
+            var buttonCol = document.createElement('div');
+            buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+            var button = document.createElement('button');
+            button.classList.add('btn', 'btn-primary', 'btn-add-recipe');
+            button.setAttribute('data-bs-toggle', 'modal');
+            button.setAttribute('data-bs-target', '#addRecipeModal');
+            buttonCol.appendChild(button);
+            var recipesRow = document.getElementById('recipesRow');
+            recipesRow.appendChild(buttonCol);  
+        }
+
+        function getAllRecipes(){
+            return get('http://localhost:8080/allRecipes').then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+
+                data.forEach(recipe => {
+                    recipe_names.push(recipe.name);
+                    recipe_cook_times.push(recipe.cookingtime);
+                    recipe_servings.push(recipe.servings);
+                    recipe_images.push(recipe.image);
+                    recipe_ids.push(recipe.id);
+                });
+                recipesCount = data.length;
+
+                if (!Array.isArray(recipe_names)) {
+                    throw new Error('Invalid recipes format');
+                }
+                
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
         function displayRecipes(){
             document.addEventListener('DOMContentLoaded', function () {
                 getAllRecipes().then(() => {
@@ -244,78 +366,23 @@
                         buttonCol.appendChild(button);
                         recipesRow.appendChild(buttonCol);
                     }
+                    displayAddRecipeBtn();
                 }).catch(error => {
                     console.error('Error displaying recipes:', error);
                 });
             });
         }
 
-        function searchRecipes() {
+        function searchRecipes(event) {
             event.preventDefault();
             search = document.getElementsByName('searched_recipe')[0].value
             window.location.href = 'searches.html?search=' + search;
-            // get('http://localhost:8080/searchRecipes').then(response => {
-            //     if (response.ok) {
-            //         return response.json();
-            //     } else {
-            //         throw new Error('Network response was not ok');
-            //     }
-            // }).then(data => {
-            //     if (!data || typeof data !== 'object') {
-            //         throw new Error('Invalid data format');
-            //     }
-                
-            //     const recipes = data.recipes;
-                
-            //     if (!Array.isArray(recipes)) {
-            //         throw new Error('Invalid recipes format');
-            //     }
-
-            //     console.log(recipes);
-                
-            // }).catch(error => {
-            //     console.error('Error:', error);
-            // });
         }
 
         function accessRecipe(recipe_name){
             window.location.href = 'recipe.html?recipe=' + recipe_name;            
         }
         
-        function getAllRecipes(){
-            return get('http://localhost:8080/allRecipes').then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            }).then(data => {
-                if (!data || typeof data !== 'object') {
-                    throw new Error('Invalid data format');
-                }
-                // alert(JSON.stringify(data, null, 2));
-
-
-                data.forEach(recipe => {
-                    recipe_names.push(recipe.name);
-                    recipe_cook_times.push(recipe.cookingtime);
-                    recipe_servings.push(recipe.servings);
-                    recipe_images.push("images/" + recipe.image);
-                    recipe_ids.push(recipe.id);
-                });
-
-                recipesCount = data.length;
-
-                if (!Array.isArray(recipe_names)) {
-                    throw new Error('Invalid recipes format');
-                }
-                
-                
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             isLogged();
         });
@@ -323,5 +390,7 @@
         displayTags();
         displayRecipes();
     </script>
+
+
 </body>
 </html>
