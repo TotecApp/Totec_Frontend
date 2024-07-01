@@ -52,7 +52,7 @@
                     <div class="container">
                         <div class="d-flex flex-row align-items-center">
                             <div class="h1" id="recipeName">Recipe Name</div>
-                            <button class="btn-fav mb-1 mx-2" onclick="addToFavorites()"></button>
+                            <button class="btn-fav mb-1 mx-2"></button>
                         </div>
                         <div class="d-flex flex-row align-items-center pb-4 gap-3 mb-4">
                             <div class="fs-5 fst-italic" id="cookingTime"></div>
@@ -81,7 +81,7 @@
                                 </div>
                             </div>
                             <div class="col" style="max-width: 300px; max-height: 300px;">
-                                <img id="recipeImage" class="img-fluid" alt="Responsive image">
+                                <img id="recipeImage" class="img-fluid rounded" alt="Responsive image">
                             </div>
                         </div>
                     </div>
@@ -90,17 +90,16 @@
             <div class="col custom-bg"></div>
         </div>
     </div>
-
+    
     <script>
-        let username;
-        let loggedIn;
         let recipe_name;
+        let userId;
         let recipe_id;
         let ingredients = [];
         let instructions = [];
         let cookingtime = 0;
         let servings = 0;
-
+        let favorite = false;
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
                 method,
@@ -111,8 +110,8 @@
             };
             if (method === 'GET') {
                 url += '?' + (new URLSearchParams(params)).toString();
-            } else {
-                options.body = JSON.stringify(params);
+                } else {
+                    options.body = JSON.stringify(params);
             }
             return fetch(url, options);
         };
@@ -122,11 +121,11 @@
         function login() {
             window.location.href = 'login.html';
         }
-
+        
         function signUp() {
             window.location.href = 'signup.html';
-        }
-
+            }
+            
         function logout() {
             get('http://localhost:8080/logout').then(response => response.text()).then(data => {
                 if (data === "Logout successful") {
@@ -136,9 +135,12 @@
                 console.error('Error:', error);
             });
         }
- 
+
+        let loggedIn = false;
+        let username = null;
+        
         function isLogged() {
-            get('http://localhost:8080/isLogged').then(response => {
+            return get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -151,7 +153,6 @@
                 
                 loggedIn = data.loggedIn;
                 username = data.username;
-                
                 if (typeof loggedIn === 'undefined' || typeof username === 'undefined') {
                     throw new Error('Missing expected properties in the response data');
                 }
@@ -165,7 +166,7 @@
                     document.getElementById("lists").style.display = "block";
                     document.getElementById("signup").style.display = "none";
                 } else {
-                    document.getElementById("username").innerHTML = "Usuário";
+                    document.getElementById("username").innerHTML = "User";
                     document.getElementById("login").style.display = "block";
                     document.getElementById("profile").style.display = "none";
                     document.getElementById("logout").style.display = "none";
@@ -173,10 +174,10 @@
                     document.getElementById("lists").style.display = "none";
                     document.getElementById("signup").style.display = "block";
                 }
-                
             }).catch(error => {
                 console.error('Error:', error);
             });
+            
         }
 
         function favorites(){
@@ -216,6 +217,7 @@
         }
 
         async function getUserId() {
+            if(!loggedIn) return null
             try {
                 const response = await get(`http://localhost:8080/getUserId`, { username });
                 
@@ -246,8 +248,8 @@
                 throw error;  // Rethrow the error to be caught by the caller
             }
         }
-
-        async function addToFavorites() {
+        
+        async function modifyFavorite(){
             if (!loggedIn) {
                 alert("You must be logged in to add a recipe to your favorites");
                 return;
@@ -264,18 +266,33 @@
                     'recipeId': parseInt(recipeId, 10)
                 };
 
-                const response = await request('http://localhost:8080/addToFavorites', params, 'POST');
+                const response = await request('http://localhost:8080/modifyFavorite', params, 'POST');
 
                 if (!response.ok) {
-                    const errorText = await response.text();
-                    console.error('Error response text:', errorText);
-                    throw new Error('Could not add to favorites');
-                    
+                    throw new Error('Could not modify favorite');
                 }
 
             } catch (error) {
                 console.error('Error:', error);
             }
+        }
+
+        function isFavorite() {
+            if (!loggedIn) return false;
+            return get('http://localhost:8080/isFavorite', {"userId": parseInt(userId), "recipeId": parseInt(recipe_id)}).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+                favorite = data.isFavorite;
+            }).catch(error => {
+                console.error('Error:', error);
+            });
         }
 
         function getRecipeInfo(){
@@ -325,22 +342,25 @@
             });
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            isLogged();
-        
+        document.addEventListener('DOMContentLoaded', async ()=> {
+            await isLogged();
             const urlParams = new URLSearchParams(window.location.search);
             recipe_name = urlParams.get('recipe');
             document.getElementById("recipeName").innerHTML = recipe_name;
-            
-            const btnFav = document.querySelector('.btn-fav');
-            btnFav.addEventListener('click', function() {
-                btnFav.classList.toggle('filled');
-            });
+            userId = await getUserId(username);
+            recipe_id = await getRecipeId(recipe_name);
             getRecipeInfo();
-
+            await isFavorite();
+            let btnFav = document.querySelector('.btn-fav');
+            if(favorite) btnFav.classList.add('filled');
+            else btnFav.classList.remove('filled');
+            btnFav.addEventListener('click', function() {
+                modifyFavorite();
+                if(loggedIn) btnFav.classList.toggle('filled');
+            });
         });
-        
 
+        
     </script>
 </body>
 </html>
