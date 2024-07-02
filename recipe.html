@@ -27,10 +27,8 @@
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
                                 <li id="login"><a class="dropdown-item" href="#" onclick="login()">Login</a></li>
-                                <li id="profile" style="display: none;"><a class="dropdown-item" href="#">Profile</a></li>
                                 <li id="logout" style="display: none;"><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
                                 <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="favorites()">Favorites</a></li>
-                                <li id="lists" style="display: none;"><a class="dropdown-item" href="#" onclick="userLists()">Lists</a></li>
                                 <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="signUp()">SignUp</a></li>
                             </ul>
                         </div>
@@ -92,6 +90,8 @@
     </div>
     
     <script>
+        let loggedIn = false;
+        let username = null;
         let recipe_name;
         let userId;
         let recipe_id;
@@ -100,6 +100,7 @@
         let cookingtime = 0;
         let servings = 0;
         let favorite = false;
+
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
                 method,
@@ -136,9 +137,6 @@
             });
         }
 
-        let loggedIn = false;
-        let username = null;
-        
         function isLogged() {
             return get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
@@ -160,18 +158,14 @@
                 if (loggedIn) {
                     document.getElementById("username").innerHTML = username;
                     document.getElementById("login").style.display = "none";
-                    document.getElementById("profile").style.display = "block";
                     document.getElementById("logout").style.display = "block";
                     document.getElementById("favorites").style.display = "block";
-                    document.getElementById("lists").style.display = "block";
                     document.getElementById("signup").style.display = "none";
                 } else {
                     document.getElementById("username").innerHTML = "User";
                     document.getElementById("login").style.display = "block";
-                    document.getElementById("profile").style.display = "none";
                     document.getElementById("logout").style.display = "none";
                     document.getElementById("favorites").style.display = "none";
-                    document.getElementById("lists").style.display = "none";
                     document.getElementById("signup").style.display = "block";
                 }
             }).catch(error => {
@@ -184,36 +178,10 @@
             window.location.href = 'favorites.html';
         }
 
-        function userLists(){
-            window.location.href = 'lists.html';
-        }
-
         function searchRecipes(event) {
             event.preventDefault();
             search = document.getElementsByName('searched_recipe')[0].value
             window.location.href = 'searches.html?search=' + search;
-            // get('http://localhost:8080/searchRecipes').then(response => {
-            //     if (response.ok) {
-            //         return response.json();
-            //     } else {
-            //         throw new Error('Network response was not ok');
-            //     }
-            // }).then(data => {
-            //     if (!data || typeof data !== 'object') {
-            //         throw new Error('Invalid data format');
-            //     }
-                
-            //     const recipes = data.recipes;
-                
-            //     if (!Array.isArray(recipes)) {
-            //         throw new Error('Invalid recipes format');
-            //     }
-
-            //     console.log(recipes);
-                
-            // }).catch(error => {
-            //     console.error('Error:', error);
-            // });
         }
 
         async function getUserId() {
