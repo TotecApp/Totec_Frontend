@@ -34,9 +34,9 @@
                         </div>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0 d-flex align-items-center">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="searched_recipe" style="width: 12rem;">
-                    <button class="btn btn-outline-success my-2 my-sm-0 bg-success text-white" type="submit" onclick="searchRecipes()">Search</button>
+                <form class="form-inline my-2 my-lg-0 d-flex align-items-center" onsubmit="searchRecipes(event)">
+                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" style="width: 12rem;">
+                    <button class="btn btn-outline-success my-2 my-sm-0 bg-success text-white" type="submit">Search</button>
                 </form>
             </div>
         </div>
@@ -339,9 +339,7 @@
             getTaggedRecipes(tags_checked);
             document.addEventListener('DOMContentLoaded', function () {
                 var recipesRow = document.getElementById('recipesRow');
-                
                 for (var i = 1; i <= recipesCount; i++) {
-                    
                     var buttonCol = document.createElement('div');
                     buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
                     var button = document.createElement('button');
@@ -471,8 +469,8 @@
 
         function searchRecipes(event) {
             event.preventDefault();
-            search = document.getElementsByName('searched_recipe')[0].value;
-            window.location.href = 'searches.html?search=' + search;
+            const search = document.getElementsByName('search')[0].value;
+            window.location.href = 'searches.html?search=' + encodeURIComponent(search);
         }
 
         function accessRecipe(recipe_name){
