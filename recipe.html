@@ -280,7 +280,6 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-                alert(JSON.stringify(data));
                 img.src = data[0].image;
                 ingredients = data[0].ingredients.split(',').map(ingredient => ingredient.trim());
                 instructions = data[0].instructions.split(',').map(instruction => instruction.trim());

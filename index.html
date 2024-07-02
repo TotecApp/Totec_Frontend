@@ -57,6 +57,7 @@
             <div class="col-8 custom-center-bg p-5 d-flex justify-content-center"> <!--Center column-->
                 <div class="container">
                     <div class="row" id="recipesRow">
+                        <span id="noResults"></span>
                         <!-- Buttons will be inserted here dynamically -->
                     </div>
                 </div>
@@ -129,6 +130,12 @@
         var tags = [];
         let new_recipe_tags = [];
         var tags_checked = [];
+        let taggedRecipesCount = 0;
+        let taggedRecipe_names = [];
+        let taggedRecipe_cook_times = [];
+        let taggedRecipe_servings = [];
+        let taggedRecipe_images = [];
+        let taggedRecipe_ids = [];
 
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
@@ -323,8 +330,7 @@
                     recipe_images.push(recipe.image);
                     recipe_ids.push(recipe.id);
                 });
-                recipesCount = data.length;
-
+                recipesCount = recipe_names.length;
                 if (!Array.isArray(recipe_names)) {
                     throw new Error('Invalid recipes format');
                 }
@@ -334,24 +340,50 @@
             });
         }
 
-        function confirmFilter(){
-            alert(tags_checked);
-            getTaggedRecipes(tags_checked);
-            document.addEventListener('DOMContentLoaded', function () {
-                var recipesRow = document.getElementById('recipesRow');
-                for (var i = 1; i <= recipesCount; i++) {
-                    var buttonCol = document.createElement('div');
-                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-                    var button = document.createElement('button');
-                    button.classList.add('btn', 'btn-primary', 'btn-square');
-                    button.innerText = 'Recipe ' + i;
-                    recipes.push('Recipe' + i);
-                    button.setAttribute('data-text', tags[(i-1)%tags.length]);
-                    button.setAttribute('onclick', 'getRecipe()');
-                    buttonCol.appendChild(button);
-                    recipesRow.appendChild(buttonCol);
-                }
-            });
+        async function confirmFilter(){
+            var recipesRow = document.getElementById('recipesRow');
+            recipesRow.innerHTML = '';
+            recipesCount = 0;
+            recipe_names = [];
+            recipe_cook_times = [];
+            recipe_servings = [];
+            recipe_images = [];
+            recipe_ids = [];
+            if(tags_checked.length === 0){
+                await displayRecipes();
+                return;
+            }
+            console.log(tags_checked);
+            await getTaggedRecipes(tags_checked);
+            
+            if(recipesCount === 0) {
+                document.getElementById("recipesRow").innerText = "No results found...";
+                var currentUrl = new URL(window.location.href);
+                history.replaceState({}, '', currentUrl.toString());
+                return;
+            }
+            
+            for (var i = 0; i < recipesCount; i++) {
+                var buttonCol = document.createElement('div');
+                buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                
+                var button = document.createElement('button');
+                button.classList.add('btn', 'btn-primary', 'btn-square');
+                button.innerText = recipe_names[i];
+                button.setAttribute('data-cooking-time', `${recipe_cook_times[i]}`);
+                button.setAttribute('data-servings', `${recipe_servings[i]}`);
+                button.style.backgroundImage = `url('${recipe_images[i]}')`;
+                button.style.backgroundSize = 'cover';
+                button.style.backgroundPosition = 'center';
+                button.style.color = 'white'; // Ensure text is visible
+                button.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
+                button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
+                buttonCol.appendChild(button);
+                recipesRow.appendChild(buttonCol);
+            }
+  
+            var currentUrl = new URL(window.location.href);
+            history.replaceState({}, '', currentUrl.toString());
         }
         
         function addRecipe(event){
@@ -371,7 +403,6 @@
                     'image': document.getElementById("recipeImage").value,
                     'tags': new_recipe_tags
                 }
-                alert(JSON.stringify(params));
                 post('http://localhost:8080/addRecipe', params, {'Content-Type': 'application/json'}
                 ).then(response => response.text()).then(data => {
                     if(data == "Success"){
@@ -457,7 +488,7 @@
                     button.style.backgroundImage = `url('${recipe_images[i]}')`;
                     button.style.backgroundSize = 'cover';
                     button.style.backgroundPosition = 'center';
-                    button.style.color = 'white'; // Ensure text is visible
+                    button.style.color = 'white';
                     button.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
                     button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
                     buttonCol.appendChild(button);
