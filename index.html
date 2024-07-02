@@ -127,6 +127,7 @@
         let recipe_images = [];
         let recipe_ids = [];
         
+        var tags = [];
         var tags_checked = [];
 
         const request = (url, params = {}, method = 'GET', headers = {}) => {
@@ -144,7 +145,7 @@
             }
             return fetch(url, options);
         };
-        var tags = ["vegetarian", "gluten free", "desert","chicken","pork"];
+        
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
         
@@ -217,40 +218,101 @@
             window.location.href = 'lists.html';
         }
 
+        function getAllTags(){
+            return get('http://localhost:8080/allTags').then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+
+                data.forEach(tag => {
+                    tags.push(tag.name);
+                });
+                
+                if (!Array.isArray(tags)) {
+                    throw new Error('Invalid tags format');
+                }
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         function displayTags(){
             document.addEventListener('DOMContentLoaded', function () {
-                var tagsCol = document.getElementById('tagsCol');
-                var tagsCount = tags.length; // Number of checkboxes you want
-                for (var i = 0; i < tagsCount; i++) {
-                    var tagsDiv = document.createElement('div');
-                    tagsDiv.classList.add('form-check', 'mb-2');
-                    var tag = document.createElement('input');
-                    tag.classList.add('form-check-input');
-                    tag.setAttribute('type', 'checkbox');
-                    tag.setAttribute('id', tags[i]);
-                    tag.setAttribute('data-label', tags[i]);
-                    var label = document.createElement('label');
-                    label.classList.add('form-check-label');
-                    label.setAttribute('for', tags[i]);
-                    label.innerText = tags[i];
-                    tagsDiv.appendChild(tag);
-                    tagsDiv.appendChild(label);
-                    tagsCol.appendChild(tagsDiv);
-                
-                    tag.addEventListener('change', function() {
-                        if(this.checked) tags_checked.push(this.getAttribute('data-label'));
-                        else{
-                            var index = tags_checked.indexOf(this.getAttribute('data-label'));
-                            if(index > -1) tags_checked.splice(index, 1);
-                        }
-                        console.log(tags_checked);
-                    });
-                }
+                getAllTags().then(() => {     
+                    var tagsCol = document.getElementById('tagsCol');
+                    var tagsCount = tags.length; // Number of checkboxes you want
+                    for (var i = 0; i < tagsCount; i++) {
+                        var tagsDiv = document.createElement('div');
+                        tagsDiv.classList.add('form-check', 'mb-2');
+                        var tag = document.createElement('input');
+                        tag.classList.add('form-check-input');
+                        tag.setAttribute('type', 'checkbox');
+                        tag.setAttribute('id', tags[i]);
+                        tag.setAttribute('data-label', tags[i]);
+                        var label = document.createElement('label');
+                        label.classList.add('form-check-label');
+                        label.setAttribute('for', tags[i]);
+                        label.innerText = tags[i];
+                        tagsDiv.appendChild(tag);
+                        tagsDiv.appendChild(label);
+                        tagsCol.appendChild(tagsDiv);
+                    
+                        tag.addEventListener('change', function() {
+                            if(this.checked) tags_checked.push(this.getAttribute('data-label'));
+                            else{
+                                var index = tags_checked.indexOf(this.getAttribute('data-label'));
+                                if(index > -1) tags_checked.splice(index, 1);
+                            }
+                            console.log(tags_checked);
+                        });
+                    }
+                }).catch(error => {
+                    console.error('Error displaying tags:', error);
+                });
             });
         }
         
+        function getTaggedRecipes(tags){
+            return post('http://localhost:8080/taggedRecipes', tags, {'Content-Type': 'application/json'}
+            ).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+
+                data.forEach(recipe => {
+                    recipe_names.push(recipe.name);
+                    recipe_cook_times.push(recipe.cookingtime);
+                    recipe_servings.push(recipe.servings);
+                    recipe_images.push(recipe.image);
+                    recipe_ids.push(recipe.id);
+                });
+                recipesCount = data.length;
+
+                if (!Array.isArray(recipe_names)) {
+                    throw new Error('Invalid recipes format');
+                }
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
         function confirmFilter(){
             alert(tags_checked);
+            getTaggedRecipes(tags_checked);
             document.addEventListener('DOMContentLoaded', function () {
                 var recipesRow = document.getElementById('recipesRow');
                 
