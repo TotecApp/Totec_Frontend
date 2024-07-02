@@ -281,7 +281,7 @@
                     throw new Error('Invalid data format');
                 }
 
-                img.src = "images/" + data[0].image;
+                img.src = data[0].image;
 
                 ingredients = data[0].ingredients.split(',').map(ingredient => ingredient.trim());
                 instructions = data[0].instructions.split(/\d+\./).filter(instruction => instruction.trim() !== '');

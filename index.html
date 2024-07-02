@@ -303,7 +303,7 @@
             }
         }
 
-        function getTaggedRecipes(){
+        function getTaggedRecipes(tags){
             return post('http://localhost:8080/taggedRecipes', tags, {'Content-Type': 'application/json'}
             ).then(response => {
                 if (response.ok) {
@@ -365,12 +365,12 @@
                 form.classList.add('was-validated');    
             } else {
                 params = {
-                    'recipeName': document.getElementById("recipeName").value,
-                    'recipeImage': document.getElementById("recipeImage").value, 
+                    'name': document.getElementById("recipeName").value,
+                    'cookingtime': document.getElementById("cookingTime").value,
+                    'servings': document.getElementById("servings").value,
                     'ingredients': document.getElementById("ingredients").value,
                     'instructions': document.getElementById("instructions").value,
-                    'cookingTime': document.getElementById("cookingTime").value,
-                    'servings': document.getElementById("servings").value,
+                    'image': document.getElementById("recipeImage").value,
                     'tags': new_recipe_tags
                 }
                 alert(JSON.stringify(params));
@@ -471,7 +471,7 @@
 
         function searchRecipes(event) {
             event.preventDefault();
-            search = document.getElementsByName('searched_recipe')[0].value
+            search = document.getElementsByName('searched_recipe')[0].value;
             window.location.href = 'searches.html?search=' + search;
         }
 
