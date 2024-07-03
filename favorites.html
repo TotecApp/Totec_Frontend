@@ -27,10 +27,11 @@
                                 <span id="username"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
-                                <li id="login"><a class="dropdown-item" href="#" onclick="login()">Login</a></li>
+                                <li id="login"><a class="dropdown-item" href="#" onclick="window.location.href = 'login.html';">Login</a></li>
                                 <li id="logout" style="display: none;"><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="favorites()">Favorites</a></li>
-                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="signUp()">SignUp</a></li>
+                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'favorites.html';">Favorites</a></li>
+                                <li id="profile" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'profile.html';">Profile</a></li>
+                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'signup.html';">SignUp</a></li>
                             </ul>
                         </div>
                     </li>
@@ -201,14 +202,6 @@
             }).catch(error => {
                 console.error('Error:', error);
             });
-        }
-
-        function favorites(){
-            window.location.href = 'favorites.html';
-        }
-
-        function goHome(){
-            window.location.href = 'index.html';
         }
 
         function searchRecipes(event) {

@@ -11,14 +11,14 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-secondary custom-navbar-bg w-100">
         <div class="container-fluid d-flex justify-content-between align-items-center">
-            <a class="navbar-brand text-white fw-bolder fs-5" style="margin-left: 20px;" href="#">Totec</a>
+            <a class="navbar-brand text-white fw-bolder fs-5" style="margin-left: 20px;" href="#" onclick="window.location.href = 'index.html'">Totec</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarSupportedContent">
                 <ul class="navbar-nav mr-auto mb-lg-0 d-flex align-items-center">
                     <li class="nav-item active">
-                        <a class="nav-link text-white fw-bolder fs-5">Home</a>
+                        <a class="nav-link text-white fw-bolder fs-5">Profile</a>
                     </li>
                     <li class="nav-item dropdown">
                         <div class="dropdown">
@@ -35,35 +35,51 @@
                         </div>
                     </li>
                 </ul>
-                <form class="form-inline my-2 my-lg-0 d-flex align-items-center" onsubmit="searchRecipes(event)">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" name="search" style="width: 12rem;">
-                    <button class="btn btn-outline-success my-2 my-sm-0 bg-success text-white" type="submit">Search</button>
-                </form>
             </div>
         </div>
     </nav>
 
     <div class="d-flex flex-column" style="min-height: 90em;">
         <div class="row flex-grow-1">
-            <div class="col custom-bg" style="margin-left:12px;"> <!--Left column-->
-                <div class="d-flex justify-content-center fs-2">Filters</div>
-                <div class="container">
-                    <div class="column" id="tagsCol"></div>
-                </div>
-                <div class="d-flex justify-content-center">
-                    <button class="btn btn-primary align-self-center w-100 mt-4 py-2" onclick="confirmFilter()">Apply</button>
-                </div>
-
+            <div class="col custom-bg" style="margin-left:12px;"> 
+                <!--Left column-->
             </div> 
-            <div class="col-8 custom-center-bg p-5 d-flex justify-content-center"> <!--Center column-->
-                <div class="container">
-                    <div class="row" id="recipesRow">
-                        <span id="noResults"></span>
-                        <!-- Buttons will be inserted here dynamically -->
+            <div class="col-8 custom-bg p-5 d-flex justify-content-center"> <!-- Center column -->
+                <div class="container custom-bg rounded d-flex flex-column"> <!-- Outer column -->
+                    <div class="row flex-grow-1" style="border-top: 2px solid #5a5a5a65; margin-top: 3em;"> <!-- Top border -->
+                        <div class="col-2 d-flex flex-column align-items-end" style="width: fit-content; height: 15em; border-right: 2px solid #5a5a5a65; margin-top: 0.5em;"> <!-- Categories -->
+                            <button id="accountBtn" class="btn btn-outline-primary align-self-end rounded toggle-button" style="width: 8em; margin-top: 2.7em; margin-right: 4px;">Account</button>
+                            <button id="editRecipesBtn" class="btn btn-outline-primary mt-3 align-self-end rounded toggle-button" style="width: 8em; margin-right: 4px;">Edit recipes</button>
+                        </div>
+                        <div id="optionsContainer" class="col d-flex flex-column align-items-end p-0" style="width: 100%; position: relative;"> <!-- Options Container -->
+                            <div id="accountOptions" class="d-flex flex-column align-items-end w-100 p-0" style="visibility: visible; position: absolute; top: 0; left: 0;"> <!-- Account Options -->
+                                <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Change Username</div>
+                                    <button id="changeUsernameBtn" class="btn btn-outline-primary mb-3 rounded align-self-end" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change username</button>
+                                </div>
+                                <div class="fs-5 text-white fw-bold mt-2 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Change Password</div>
+                                    <button id="changePswBtn" class="btn btn-outline-primary mb-3 rounded" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change password</button>
+                                </div>
+                            </div>
+                            <div id="editRecipesOptions" class="d-flex flex-column align-items-end w-100 p-0" style="visibility: hidden; position: absolute; top: 0; left: 0;"> <!-- Edit Recipes Options -->
+                                <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Edit Recipes</div>
+                                    <button id="changeUsernameBtn" class="btn btn-outline-primary mb-3 rounded align-self-end" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change username</button>
+                                </div>
+                                <div class="fs-5 text-white fw-bold mt-2 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Change Password</div>
+                                    <button id="changePswBtn" class="btn btn-outline-primary mb-3 rounded" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change password</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
-            <div class="col custom-bg"></div> <!--Right column-->
+
+            <div class="col custom-bg">
+                <!--Right column-->
+            </div> 
         </div>
     </div>
 
@@ -112,7 +128,7 @@
                             <div class="row mt-2" id="tagsRow"></div>
                         </div>
 
-                    <button type="submit" class="btn btn-primary mt-3" data-bs-dismiss="modal">Submit</button>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
                 </form>                
             </div>
         </div>
@@ -122,16 +138,16 @@
     <script>
         let username = null;
         let loggedIn = false;
-        var userId = null;
+        let userId = null;
         let recipesCount = 0;
         let recipe_names = [];
         let recipe_cook_times = [];
         let recipe_servings = [];
         let recipe_images = [];
         let recipe_ids = [];
-        var tags = [];
+        let tags = [];
         let new_recipe_tags = [];
-        var tags_checked = [];
+        let tags_checked = [];
         let taggedRecipesCount = 0;
         let taggedRecipe_names = [];
         let taggedRecipe_cook_times = [];
@@ -157,7 +173,7 @@
         
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
-
+        
         function logout() {
             get('http://localhost:8080/logout').then(response => response.text()).then(data => {
                 if (data === "Logout successful") {
@@ -168,7 +184,7 @@
             });
         }
 
-        function isLogged() {
+        async function isLogged() {
             return get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
                     return response.json();
@@ -179,6 +195,7 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
+                
                 loggedIn = data.loggedIn;
                 username = data.username;
                 if (typeof loggedIn === 'undefined' || typeof username === 'undefined') {
@@ -190,16 +207,15 @@
                     document.getElementById("login").style.display = "none";
                     document.getElementById("logout").style.display = "block";
                     document.getElementById("favorites").style.display = "block";
-                    document.getElementById("profile").style.display = "block";
                     document.getElementById("signup").style.display = "none";
                 } else {
                     document.getElementById("username").innerHTML = "User";
                     document.getElementById("login").style.display = "block";
                     document.getElementById("logout").style.display = "none";
                     document.getElementById("favorites").style.display = "none";
-                    document.getElementById("profile").style.display = "none";
                     document.getElementById("signup").style.display = "block";
                 }
+                
             }).catch(error => {
                 console.error('Error:', error);
             });
@@ -221,7 +237,7 @@
                 throw error;  // Rethrow the error to be caught by the caller
             }
         }
-        
+
         function getAllTags(){
             return get('http://localhost:8080/allTags').then(response => {
                 if (response.ok) {
@@ -421,7 +437,8 @@
                     
                 }).catch(error => {
                     console.error('Error:', error);
-                });      
+                });  
+    
                 resetAddRecipeForm();
             }
         }
@@ -499,14 +516,8 @@
                     buttonCol.appendChild(button);
                     recipesRow.appendChild(buttonCol);
                 }
-                if(loggedIn) displayAddRecipeBtn();
+                displayAddRecipeBtn();
             });
-        }
-
-        function searchRecipes(event) {
-            event.preventDefault();
-            const search = document.getElementsByName('search')[0].value;
-            window.location.href = 'searches.html?search=' + encodeURIComponent(search);
         }
 
         function accessRecipe(recipe_name){
@@ -515,12 +526,42 @@
         
         document.addEventListener('DOMContentLoaded', async () => {
             await isLogged();
-            if(loggedIn) userId = await getUserId(username);
-            await getAllTags();
-            displayFilterTags();
-            setNewRecipeTags();
-            displayRecipes();
-            document.getElementById('addRecipeModal').addEventListener('hidden.bs.modal', resetAddRecipeForm);
+            
+            const accountButton = document.getElementById('accountBtn');
+            const editRecipesButton = document.getElementById('editRecipesBtn');
+            const accountOptions = document.getElementById('accountOptions');
+            const editRecipesOptions = document.getElementById('editRecipesOptions');
+
+            accountButton.classList.add('bg-primary');
+            accountButton.classList.add('text-white');
+
+            accountButton.addEventListener('click', function() {
+                if (!accountButton.classList.contains('bg-primary')) {
+                    accountButton.classList.add('bg-primary');
+                    accountButton.classList.add('text-white');
+                    editRecipesButton.classList.remove('bg-primary');
+                    editRecipesButton.classList.remove('text-white');
+                    accountOptions.style.visibility = "visible";
+                    editRecipesOptions.style.visibility = "hidden";
+                }
+            });
+
+            editRecipesButton.addEventListener('click', function() {
+                if (!editRecipesButton.classList.contains('bg-primary')) {
+                    editRecipesButton.classList.add('bg-primary');
+                    editRecipesButton.classList.add('text-white');
+                    accountButton.classList.remove('bg-primary');
+                    accountButton.classList.remove('text-white');
+                    accountOptions.style.visibility = "hidden";
+                    editRecipesOptions.style.visibility = "visible";
+                }
+            });
+            // userId = await getUserId(username);
+            // await getAllTags();
+            // displayFilterTags();
+            // setNewRecipeTags();
+            // displayRecipes();
+            // document.getElementById('addRecipeModal').addEventListener('hidden.bs.modal', resetAddRecipeForm);
         });
 
     </script>

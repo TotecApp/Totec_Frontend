@@ -144,3 +144,20 @@ body {
 .btn-close:focus-visible {
     outline: none; /* Remove outline on focus */
 }
+
+#optionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    padding: 0;
+    position: relative;
+}
+
+#accountOptions, #editRecipesOptions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    visibility: hidden; /* Initially hide editRecipesOptions */
+}

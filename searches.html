@@ -26,12 +26,11 @@
                                 <span id="username"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
-                                <li id="login"><a class="dropdown-item" href="#" onclick="login()">Login</a></li>
-                                <li id="profile" style="display: none;"><a class="dropdown-item" href="#">Profile</a></li>
+                                <li id="login"><a class="dropdown-item" href="#" onclick="window.location.href = 'login.html';">Login</a></li>
                                 <li id="logout" style="display: none;"><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="favorites()">Favorites</a></li>
-                                <li id="lists" style="display: none;"><a class="dropdown-item" href="#" onclick="userLists()">Lists</a></li>
-                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="signUp()">SignUp</a></li>
+                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'favorites.html';">Favorites</a></li>
+                                <li id="profile" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'profile.html';">Profile</a></li>
+                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'signup.html';">SignUp</a></li>
                             </ul>
                         </div>
                     </li>
@@ -145,22 +144,6 @@
             });
         }
 
-        function showUserProfile(){
-            window.location.href = 'profile.html';
-        }
-
-        function favorites(){
-            window.location.href = 'favorites.html';
-        }
-
-        function userLists(){
-            window.location.href = 'lists.html';
-        }
-
-        function goHome(){
-            window.location.href = 'index.html';
-        }
-
         function displayResults(){
             var recipesRow = document.getElementById('buttonRow');
             for (var i = 0; i < recipesCount; i++) {
@@ -205,8 +188,6 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-                // alert(JSON.stringify(data, null, 2));
-
 
                 data.forEach(recipe => {
                     recipe_names.push(recipe.name);
@@ -227,7 +208,6 @@
             });
         }
         
-
         document.addEventListener('DOMContentLoaded', async () => {
             isLogged();
             search_string = new URLSearchParams(window.location.search).get('search');
