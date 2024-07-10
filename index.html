@@ -26,10 +26,11 @@
                                 <span id="username"></span>
                             </button>
                             <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
-                                <li id="login"><a class="dropdown-item" href="#" onclick="login()">Login</a></li>
+                                <li id="login"><a class="dropdown-item" href="#" onclick="window.location.href = 'login.html';">Login</a></li>
                                 <li id="logout" style="display: none;"><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
-                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="favorites()">Favorites</a></li>
-                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="signUp()">SignUp</a></li>
+                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'favorites.html';">Favorites</a></li>
+                                <li id="profile" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'profile.html';">Profile</a></li>
+                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'signup.html';">SignUp</a></li>
                             </ul>
                         </div>
                     </li>
@@ -111,7 +112,7 @@
                             <div class="row mt-2" id="tagsRow"></div>
                         </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    <button type="submit" class="btn btn-primary mt-3" data-bs-dismiss="modal">Submit</button>
                 </form>                
             </div>
         </div>
@@ -119,8 +120,9 @@
     </div>
     
     <script>
-        var username;
-        var loggeIn;
+        let username = null;
+        let loggedIn = false;
+        var userId = null;
         let recipesCount = 0;
         let recipe_names = [];
         let recipe_cook_times = [];
@@ -155,15 +157,6 @@
         
         const get = (url, params, headers) => request(url, params, 'GET', headers);
         const post = (url, params, headers) => request(url, params, 'POST', headers);
-        
-        
-        function login() {
-            window.location.href = 'login.html';
-        }
-
-        function signUp() {
-            window.location.href = 'signup.html';
-        }
 
         function logout() {
             get('http://localhost:8080/logout').then(response => response.text()).then(data => {
@@ -176,7 +169,7 @@
         }
 
         function isLogged() {
-            get('http://localhost:8080/isLogged').then(response => {
+            return get('http://localhost:8080/isLogged').then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -186,10 +179,8 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-                
                 loggedIn = data.loggedIn;
                 username = data.username;
-                
                 if (typeof loggedIn === 'undefined' || typeof username === 'undefined') {
                     throw new Error('Missing expected properties in the response data');
                 }
@@ -199,24 +190,38 @@
                     document.getElementById("login").style.display = "none";
                     document.getElementById("logout").style.display = "block";
                     document.getElementById("favorites").style.display = "block";
+                    document.getElementById("profile").style.display = "block";
                     document.getElementById("signup").style.display = "none";
                 } else {
                     document.getElementById("username").innerHTML = "User";
                     document.getElementById("login").style.display = "block";
                     document.getElementById("logout").style.display = "none";
                     document.getElementById("favorites").style.display = "none";
+                    document.getElementById("profile").style.display = "none";
                     document.getElementById("signup").style.display = "block";
                 }
-                
             }).catch(error => {
                 console.error('Error:', error);
             });
         }
-
-        function favorites(){
-            window.location.href = 'favorites.html';
+        
+        async function getUserId() {
+            if(!loggedIn) return null
+            try {
+                const response = await get(`http://localhost:8080/getUserId`, { username });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.text();
+                return data;  // Return the user ID
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;  // Rethrow the error to be caught by the caller
+            }
         }
-
+        
         function getAllTags(){
             return get('http://localhost:8080/allTags').then(response => {
                 if (response.ok) {
@@ -395,6 +400,7 @@
                 form.classList.add('was-validated');    
             } else {
                 params = {
+                    'creatorId': userId,
                     'name': document.getElementById("recipeName").value,
                     'cookingtime': document.getElementById("cookingTime").value,
                     'servings': document.getElementById("servings").value,
@@ -408,15 +414,15 @@
                     if(data == "Success"){
                         displayTags();
                         displayRecipes();
+                        alert("Recipe added successfully!");
                     }
                     else{
-                        alert(data);
+                        alert("Failed to add recipe...");
                     }
                     
                 }).catch(error => {
                     console.error('Error:', error);
-                });  
-    
+                });      
                 resetAddRecipeForm();
             }
         }
@@ -431,6 +437,10 @@
         }
 
         function displayAddRecipeBtn(){
+            if(!loggedIn){
+                alert("Please login to add a recipe!");
+                return;
+            }
             var buttonCol = document.createElement('div');
             buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
             var button = document.createElement('button');
@@ -439,7 +449,7 @@
             button.setAttribute('data-bs-target', '#addRecipeModal');
             buttonCol.appendChild(button);
             var recipesRow = document.getElementById('recipesRow');
-            recipesRow.appendChild(buttonCol);  
+            recipesRow.appendChild(buttonCol);
         }
 
         function getAllRecipes(){
@@ -509,14 +519,14 @@
         }
         
         document.addEventListener('DOMContentLoaded', async () => {
-            isLogged();
+            await isLogged();
+            if(loggedIn) userId = await getUserId(username);
             await getAllTags();
             displayFilterTags();
             setNewRecipeTags();
             displayRecipes();
             document.getElementById('addRecipeModal').addEventListener('hidden.bs.modal', resetAddRecipeForm);
         });
-
 
     </script>
 

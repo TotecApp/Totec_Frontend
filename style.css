@@ -144,3 +144,46 @@ body {
 .btn-close:focus-visible {
     outline: none; /* Remove outline on focus */
 }
+
+#optionsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    width: 100%;
+    padding: 0;
+    position: relative;
+}
+
+#accountOptions, #editRecipesOptions {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    visibility: hidden; /* Initially hide editRecipesOptions */
+}
+
+#recipesRow btn{
+    margin: 0;
+}
+
+.btn-edit-recipe {
+    position: absolute; /* Absolute positioning within the relative container */
+    top: 0.5em; /* Adjust as needed */
+    right: 0.5em; /* Adjust as needed */
+    width: 2em; /* Adjust as needed */
+    height: 2em; /* Adjust as needed */
+    padding: 0.2em 0.5em;
+    background-image: url('images/edit-icon.svg'); /* Edit icon */
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+    z-index: 1;
+    transition: background-image 0.3s ease;
+}
+.btn-edit-recipe:hover {
+    background-image: url('images/edit-icon-hover.svg'); /* Edit icon on hover */
+    background-color: #0d6efd;
+}

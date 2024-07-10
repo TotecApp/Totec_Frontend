@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Totec</title>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-secondary custom-navbar-bg w-100">
+        <div class="container-fluid d-flex justify-content-between align-items-center">
+            <a class="navbar-brand text-white fw-bolder fs-5" style="margin-left: 20px;" href="#" onclick="window.location.href = 'index.html'">Totec</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse d-flex justify-content-between align-items-center" id="navbarSupportedContent">
+                <ul class="navbar-nav mr-auto mb-lg-0 d-flex align-items-center">
+                    <li class="nav-item active">
+                        <a class="nav-link text-white fw-bolder fs-5">Profile</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <div class="dropdown">
+                            <button class="btn dropdown-toggle text-white fw-bolder fs-5" href="#" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span id="username"></span>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-right" style="min-width: 5em;" aria-labelledby="dropdownMenuButton1">
+                                <li id="login"><a class="dropdown-item" href="#" onclick="window.location.href = 'login.html';">Login</a></li>
+                                <li id="logout" style="display: none;"><a class="dropdown-item" href="#" onclick="logout()">Logout</a></li>
+                                <li id="favorites" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'favorites.html';">Favorites</a></li>
+                                <li id="profile" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'profile.html';">Profile</a></li>
+                                <li id="signup" style="display: none;"><a class="dropdown-item" href="#" onclick="window.location.href = 'signup.html';">SignUp</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="d-flex flex-column" style="min-height: 90em;">
+        <div class="row flex-grow-1">
+            <div class="col custom-bg" style="margin-left:12px;"> 
+                <!--Left column-->
+            </div> 
+            <div class="col-8 custom-bg p-5 d-flex justify-content-center"> <!-- Center column -->
+                <div class="container custom-bg rounded d-flex flex-column">
+                    <div class="row flex-grow-1" style="border-top: 2px solid #5a5a5a65; margin-top: 3em;">
+                        <div class="col-2 d-flex flex-column align-items-end" style="width: fit-content; height: 15em; border-right: 2px solid #5a5a5a65; margin-top: 0.5em;"> <!-- Categories -->
+                            <button id="accountBtn" class="btn btn-outline-primary align-self-end rounded toggle-button" style="width: 8em; margin-top: 2.7em; margin-right: 4px;">Account</button>
+                            <button id="editRecipesBtn" class="btn btn-outline-primary mt-3 align-self-end rounded toggle-button" style="width: 8em; margin-right: 4px;">Edit recipes</button>
+                        </div>
+                        <div id="optionsContainer" class="col d-flex flex-column align-items-end p-0" style="width: 100%; position: relative;"> <!-- Options Container -->
+                            <div id="accountOptions" class="d-flex flex-column align-items-end w-100 p-0" style="visibility: visible; position: absolute; top: 0; left: 0;"> <!-- Account Options -->
+                                <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Change Username</div>
+                                    <button id="changeUsernameBtn" class="btn btn-outline-primary mb-3 rounded align-self-end"  data-bs-toggle="modal" data-bs-target="#changeUsernameModal" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change username</button>
+                                </div>
+                                <div class="fs-5 text-white fw-bold mt-2 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Change Password</div>
+                                    <button id="changePswBtn" class="btn btn-outline-primary mb-3 rounded" data-bs-toggle="modal" data-bs-target="#changePswModal" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change password</button>
+                                </div>
+                            </div>
+                            <div id="editRecipesOptions" class="d-flex flex-column align-items-start w-100 p-0" style="visibility: hidden; position: absolute; top: 0; left: 0;"> <!-- Edit Recipes Options -->
+                                <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65; border-left: 2px#5a5a5a65;">
+                                    <div class="row" style="margin-left: 16px;">Edit Recipes</div>
+                                    <div class="row d-flex flex-row align-items-start" id="recipesRow" style="margin-top: 0.8em; margin-left: 4px;">
+                                        <span id="noResults"></span>
+                                        <!-- Buttons will be inserted here dynamically -->
+                                    </div>
+                                </div>
+                            </div>                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col custom-bg">
+                <!--Right column-->
+            </div> 
+        </div>
+    </div>
+
+    <div class="modal fade" id="changeUsernameModal" tabindex="-1" aria-labelledby="changeUsernameModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content custom-bg">
+            <div class="modal-header">
+                <h5 class="modal-title float-start" id="changeUsernameModalLabel">Change Username</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="align-middle" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="changeUsername(event)" novalidate>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-3" id="newUsername" placeholder="New Username" name="newUsername" required>
+                        <label for="newUsername"><b>New Username</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control mt-2" id="password" placeholder="Password" name="password" required>
+                        <label for="password"><b>Password</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>                
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="changePswModal" tabindex="-1" aria-labelledby="changePswModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content custom-bg">
+            <div class="modal-header">
+                <h5 class="modal-title float-start" id="changePswModalLabel">Add Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="align-middle" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="changePassword(event)" novalidate>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-3" id="currentPsw" placeholder="Current password" name="currentPsw" required>
+                        <label for="currentPsw"><b>Current Password</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control mt-2" id="newPsw" placeholder="New Password" name="newPsw" required>
+                        <label for="newPsw"><b>New Password</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control mt-2" id="confirmNewPsw" placeholder="Confirm New Password" name="confirmNewPsw" required>
+                        <label for="confirmNewPsw"><b>Confirm New Password</b></label>
+                        <div class="invalid-feedback" id="confirmNewPswError">This field cannot be empty.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>                
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content custom-bg">
+            <div class="modal-header">
+                <h5 class="modal-title float-start" id="editRecipeModalLabel">Edit Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="align-middle" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="editRecipe(event)" novalidate>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-3" id="recipeName" placeholder="Recipe name" name="recipeName" required>
+                        <label for="recipeName"><b>Recipe name</b></label>
+                        <div class="invalid-feedback">Please provide a recipe name.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="recipeImage" placeholder="Recipe Image" name="recipeImage" required>
+                        <label for="recipeImage"><b>Recipe Image</b></label>
+                        <div class="invalid-feedback">Please provide a recipe image URL.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="ingredients" placeholder="Ingredients" name="ingredients" required>
+                        <label for="ingredients"><b>Ingredients</b></label>
+                        <div class="invalid-feedback">Please provide ingredients.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="instructions" placeholder="Instructions" name="instructions" required>
+                        <label for="instructions"><b>Instructions</b></label>
+                        <div class="invalid-feedback">Please provide instructions.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="cookingTime" placeholder="Cooking Time" name="cookingTime" required>
+                        <label for="cookingTime"><b>Cooking Time</b></label>
+                        <div class="invalid-feedback">Please provide the cooking time.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-2" id="servings" placeholder="Servings" name="servings" required>
+                        <label for="servings"><b>Servings</b></label>
+                        <div class="invalid-feedback">Please provide the number of servings.</div>
+
+                        <div class="container">
+                            <div class="row mt-2" id="tagsRow"></div>
+                        </div>
+
+                    <button type="submit" class="btn btn-primary mt-3" data-bs-dismiss="modal">Submit</button>
+                </form>                
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <script>
+        let username = null;
+        let loggedIn = false;
+        let userId = null;
+        let recipesCount = 0;
+        let recipe_names = [];
+        let recipe_ingredients = [];
+        let recipe_instructions = [];
+        let recipe_cook_times = [];
+        let recipe_servings = [];
+        let recipe_images = [];
+        let recipe_ids = [];
+        let recipe_tags = [];
+        let tags = [];
+        let new_recipe_tags = [];
+        let curr_name = '';
+        
+
+        const request = (url, params = {}, method = 'GET', headers = {}) => {
+            let options = {
+                method,
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include'
+            };
+            if (method === 'GET') {
+                url += '?' + (new URLSearchParams(params)).toString();
+            } else {
+                options.body = JSON.stringify(params);
+            }
+            return fetch(url, options);
+        };
+        
+        const get = (url, params, headers) => request(url, params, 'GET', headers);
+        const post = (url, params, headers) => request(url, params, 'POST', headers);
+        
+        function logout() {
+            get('http://localhost:8080/logout').then(response => response.text()).then(data => {
+                if (data === "Logout successful") {
+                    window.location.href = 'index.html';
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        async function isLogged() {
+            return get('http://localhost:8080/isLogged').then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+                
+                loggedIn = data.loggedIn;
+                username = data.username;
+                if (typeof loggedIn === 'undefined' || typeof username === 'undefined') {
+                    throw new Error('Missing expected properties in the response data');
+                }
+
+                if (loggedIn) {
+                    document.getElementById("username").innerHTML = username;
+                    document.getElementById("login").style.display = "none";
+                    document.getElementById("logout").style.display = "block";
+                    document.getElementById("favorites").style.display = "block";
+                    document.getElementById("signup").style.display = "none";
+                } else {
+                    document.getElementById("username").innerHTML = "User";
+                    document.getElementById("login").style.display = "block";
+                    document.getElementById("logout").style.display = "none";
+                    document.getElementById("favorites").style.display = "none";
+                    document.getElementById("signup").style.display = "block";
+                }
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        async function getUserId() {
+            if(!loggedIn) return null
+            try {
+                const response = await get(`http://localhost:8080/getUserId`, { username });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.text();
+                return data;  // Return the user ID
+            } catch (error) {
+                console.error('Error:', error);
+                throw error;  // Rethrow the error to be caught by the caller
+            }
+        }
+
+        function changeUsername(event) {
+            event.preventDefault();
+            const form = event.target;
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+            const newUsername = form.newUsername.value;
+            const password = form.password.value;
+            params = {
+                "username": username,
+                "newUsername": newUsername,
+                "password": password
+            }
+            
+            get('http://localhost:8080/changeUsername', params, {'Content-Type': 'application/json'}
+            ).then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (data === "Success") {
+                    alert("Username changed successfully");
+                    
+                    get('http://localhost:8080/logout').then(response => response.text()).then(data => {
+                        if (data === "Logout successful") {
+                            window.location.href = 'login.html';
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    alert("Username change failed");
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function resetChangeUsernameForm(){
+            const form = document.querySelector('form[onsubmit="changeUsername(event)"]');
+            form.reset();
+            document.getElementById('newUsername').classList.remove('is-invalid');
+            form.classList.remove('was-validated');
+        }
+
+        function changePassword(event) {
+            event.preventDefault();
+            const form = event.target;
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+            var password = document.getElementById('currentPsw').value;
+            var newPassword = document.getElementById('newPsw').value;
+            var confirmNewPassword = document.getElementById('confirmNewPsw').value;
+            var confirmNewPswField = document.getElementById('confirmNewPsw');
+            var confirmNewPswError = document.getElementById('confirmNewPswError');
+
+            if (newPassword !== confirmNewPassword) {
+                confirmNewPswField.setCustomValidity('Passwords do not match.');
+                confirmNewPswError.textContent = 'Passwords do not match.';
+                confirmNewPswField.classList.add('is-invalid');
+                return false; // Prevent the form from submitting
+            } else {
+                confirmNewPswField.setCustomValidity('');
+                confirmNewPswError.textContent = 'This field cannot be empty.';
+                confirmNewPswField.classList.remove('is-invalid');
+            }
+
+            params = {
+                "username": username,
+                "password": password,
+                "newPassword": newPassword
+            }
+            
+            get('http://localhost:8080/changePassword', params, {'Content-Type': 'application/json'}
+            ).then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (data === "Success") {
+                    alert("Password changed successfully");
+                    get('http://localhost:8080/logout').then(response => response.text()).then(data => {
+                        if (data === "Logout successful") {
+                            window.location.href = 'login.html';
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    alert("Username change failed");
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function resetChangePswForm(){
+            const form = document.querySelector('form[onsubmit="changePassword(event)"]');
+            form.reset();
+            document.getElementById('currentPsw').classList.remove('is-invalid');
+            document.getElementById('newPsw').classList.remove('is-invalid');
+            document.getElementById('confirmNewPsw').classList.remove('is-invalid');
+            form.classList.remove('was-validated');
+        }
+
+        function getAllTags(){
+            return get('http://localhost:8080/allTags').then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+
+                data.forEach(tag => {
+                    tags.push(tag.name);
+                });
+                if (!Array.isArray(tags)) {
+                    throw new Error('Invalid tags format');
+                }
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function showTags(){
+            var tagsRow = document.getElementById('tagsRow');
+            tagsRow.innerHTML = '';
+            for (var i = 0; i < tags.length; i++) {
+                var tagCol = document.createElement('div');
+                tagCol.classList.add('col-md-3', 'mb-1', 'd-flex', 'justify-content-start');
+                
+                var tagsDiv = document.createElement('div');
+                tagsDiv.classList.add('form-check', 'mb-2');
+                
+                var tag = document.createElement('input');
+                tag.classList.add('form-check-input');
+                tag.setAttribute('type', 'checkbox');
+                tag.setAttribute('id', tags[i]);
+                tag.setAttribute('data-label', tags[i]);
+                
+                var label = document.createElement('label');
+                label.classList.add('form-check-label');
+                label.setAttribute('for', tags[i]);
+                label.innerText = tags[i];
+                
+                tagsDiv.appendChild(tag);
+                tagsDiv.appendChild(label);
+                tagCol.appendChild(tagsDiv);
+                tagsRow.appendChild(tagCol);
+
+                tag.addEventListener('change', function() {
+                    if (this.checked) {
+                        edit_recipe_tags.push(this.getAttribute('data-label'));
+                    } else {
+                        var index = edit_recipe_tags.indexOf(this.getAttribute('data-label'));
+                        if (index > -1) {
+                            edit_recipe_tags.splice(index, 1);
+                        }
+                    }
+                    console.log(edit_recipe_tags);
+                });
+            }
+        }
+
+        function getAddedRecipes(){
+            var recipesRow = document.getElementById('recipesRow');
+            recipesRow.innerHTML = '';
+            return get('http://localhost:8080/addedRecipes', {'creatorId': userId}).then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('No recipes found');
+                }
+            }).then(data => {
+                if (!data || typeof data !== 'object') {
+                    throw new Error('Invalid data format');
+                }
+                
+                data.forEach(recipe => {
+                    recipe_names.push(recipe.name);
+                    recipe_cook_times.push(recipe.cookingtime);
+                    recipe_ingredients.push(recipe.ingredients);
+                    recipe_instructions.push(recipe.instructions);
+                    recipe_servings.push(recipe.servings);
+                    recipe_images.push(recipe.image);
+                    recipe_ids.push(recipe.id);
+                    recipe_tags.push(recipe.tags);
+                });
+                
+                recipesCount = data.length;
+
+                if (!Array.isArray(recipe_names)) {
+                    throw new Error('Invalid recipes format');
+                }
+                
+                
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+        
+        function displayRecipes(){
+            getAddedRecipes().then(() => {
+                if(recipesCount === 0) {
+                    document.getElementById("recipesRow").innerText = "No recipes to edit...";
+                    return;
+                }
+                var recipesRow = document.getElementById('recipesRow');
+                recipesRow.innerHTML = '';
+                for (var i = 0; i < recipesCount; i++) {
+                    var buttonCol = document.createElement('div');
+                    buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
+                    
+                    var recipe = document.createElement('div');
+                    recipe.classList.add('rounded');    
+                    recipe.style.width = '8em';
+                    recipe.style.height = '8em';
+                    recipe.style.display = 'flex';
+                    recipe.style.justifyContent = 'center';
+                    recipe.style.alignItems = 'center';
+                    recipe.style.backgroundImage = `url('${recipe_images[i]}')`;
+                    recipe.style.backgroundSize = 'cover';
+                    recipe.style.backgroundPosition = 'center';
+                    recipe.style.color = 'white';
+                    recipe.innerText = recipe_names[i];
+                    recipe.style.position = 'relative';
+
+                    var editRecipeBtn = document.createElement('button');
+                    editRecipeBtn.classList.add('btn', 'btn-secondary', 'btn-edit-recipe');
+                    editRecipeBtn.setAttribute('data-bs-toggle', 'modal');
+                    editRecipeBtn.setAttribute('data-bs-target', '#editRecipeModal');
+                    editRecipeBtn.setAttribute('onclick', 'fillRecipeForm(' + i + ')');
+                    
+                    recipe.appendChild(editRecipeBtn);
+                    buttonCol.appendChild(recipe);
+                    recipesRow.appendChild(buttonCol);
+                }
+            });
+        }
+    
+
+
+        function fillRecipeForm(index){
+            document.getElementById('recipeName').value = recipe_names[index];
+            document.getElementById('recipeImage').value = recipe_images[index];
+            document.getElementById('ingredients').value = recipe_ingredients[index];
+            document.getElementById('instructions').value = recipe_instructions[index];
+            document.getElementById('cookingTime').value = recipe_cook_times[index];
+            document.getElementById('servings').value = recipe_servings[index];
+            edit_recipe_tags = recipe_tags[index].split(',').map(tag => tag.trim());
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            showTags();
+            edit_recipe_tags.forEach(tag => {
+                let checkbox = document.querySelector(`input[data-label="${tag}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+            curr_name = recipe_names[index];
+        }
+
+        function editRecipe(event){
+            event.preventDefault();
+            var form = event.target;
+            
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');    
+            } else {
+                params = {
+                    'creatorId': userId,
+                    'currName': curr_name, 
+                    'newName': document.getElementById("recipeName").value,
+                    'cookingtime': document.getElementById("cookingTime").value,
+                    'servings': document.getElementById("servings").value,
+                    'ingredients': document.getElementById("ingredients").value,
+                    'instructions': document.getElementById("instructions").value,
+                    'image': document.getElementById("recipeImage").value,
+                    'tags': edit_recipe_tags
+                }
+                post('http://localhost:8080/editRecipe', params, {'Content-Type': 'application/json'}
+                ).then(response => response.text()).then(data => {
+                    if(data == "Success"){
+                        alert("Recipe edited successfully!");
+                    }
+                    else{
+                        alert("Failed to edit recipe...");
+                    }
+                    
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', async () => {
+            await isLogged();
+            if(!loggedIn) window.location.href = 'index.html';
+            userId = await getUserId(username);
+            await getAllTags();
+            const accountButton = document.getElementById('accountBtn');
+            const editRecipesButton = document.getElementById('editRecipesBtn');
+            const accountOptions = document.getElementById('accountOptions');
+            const editRecipesOptions = document.getElementById('editRecipesOptions');
+
+            accountButton.classList.add('bg-primary');
+            accountButton.classList.add('text-white');
+
+            accountButton.addEventListener('click', function() {
+                if (!accountButton.classList.contains('bg-primary')) {
+                    accountButton.classList.add('bg-primary');
+                    accountButton.classList.add('text-white');
+                    editRecipesButton.classList.remove('bg-primary');
+                    editRecipesButton.classList.remove('text-white');
+                    accountOptions.style.visibility = "visible";
+                    editRecipesOptions.style.visibility = "hidden";
+                }
+            });
+
+            editRecipesButton.addEventListener('click', function() {
+                if (!editRecipesButton.classList.contains('bg-primary')) {
+                    editRecipesButton.classList.add('bg-primary');
+                    editRecipesButton.classList.add('text-white');
+                    accountButton.classList.remove('bg-primary');
+                    accountButton.classList.remove('text-white');
+                    accountOptions.style.visibility = "hidden";
+                    editRecipesOptions.style.visibility = "visible";
+                    displayRecipes();
+                }
+            });
+            
+            document.getElementById('changeUsernameModal').addEventListener('hidden.bs.modal', resetChangeUsernameForm);
+            document.getElementById('changePswModal').addEventListener('hidden.bs.modal', resetChangePswForm);
+            document.getElementById('editRecipeModal').addEventListener('hidden.bs.modal', displayRecipes);
+        });
+
+
+    </script>
+
+
+</body>
+</html>
