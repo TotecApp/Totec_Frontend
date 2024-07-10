@@ -45,8 +45,8 @@
                 <!--Left column-->
             </div> 
             <div class="col-8 custom-bg p-5 d-flex justify-content-center"> <!-- Center column -->
-                <div class="container custom-bg rounded d-flex flex-column"> <!-- Outer column -->
-                    <div class="row flex-grow-1" style="border-top: 2px solid #5a5a5a65; margin-top: 3em;"> <!-- Top border -->
+                <div class="container custom-bg rounded d-flex flex-column">
+                    <div class="row flex-grow-1" style="border-top: 2px solid #5a5a5a65; margin-top: 3em;">
                         <div class="col-2 d-flex flex-column align-items-end" style="width: fit-content; height: 15em; border-right: 2px solid #5a5a5a65; margin-top: 0.5em;"> <!-- Categories -->
                             <button id="accountBtn" class="btn btn-outline-primary align-self-end rounded toggle-button" style="width: 8em; margin-top: 2.7em; margin-right: 4px;">Account</button>
                             <button id="editRecipesBtn" class="btn btn-outline-primary mt-3 align-self-end rounded toggle-button" style="width: 8em; margin-right: 4px;">Edit recipes</button>
@@ -55,45 +55,104 @@
                             <div id="accountOptions" class="d-flex flex-column align-items-end w-100 p-0" style="visibility: visible; position: absolute; top: 0; left: 0;"> <!-- Account Options -->
                                 <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65;">
                                     <div class="row" style="margin-left: 16px;">Change Username</div>
-                                    <button id="changeUsernameBtn" class="btn btn-outline-primary mb-3 rounded align-self-end" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change username</button>
+                                    <button id="changeUsernameBtn" class="btn btn-outline-primary mb-3 rounded align-self-end"  data-bs-toggle="modal" data-bs-target="#changeUsernameModal" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change username</button>
                                 </div>
                                 <div class="fs-5 text-white fw-bold mt-2 w-100" style="border-bottom: 2px solid #5a5a5a65;">
                                     <div class="row" style="margin-left: 16px;">Change Password</div>
-                                    <button id="changePswBtn" class="btn btn-outline-primary mb-3 rounded" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change password</button>
+                                    <button id="changePswBtn" class="btn btn-outline-primary mb-3 rounded" data-bs-toggle="modal" data-bs-target="#changePswModal" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change password</button>
                                 </div>
                             </div>
-                            <div id="editRecipesOptions" class="d-flex flex-column align-items-end w-100 p-0" style="visibility: hidden; position: absolute; top: 0; left: 0;"> <!-- Edit Recipes Options -->
-                                <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65;">
+                            <div id="editRecipesOptions" class="d-flex flex-column align-items-start w-100 p-0" style="visibility: hidden; position: absolute; top: 0; left: 0;"> <!-- Edit Recipes Options -->
+                                <div class="fs-5 text-white fw-bold mt-1 w-100" style="border-bottom: 2px solid #5a5a5a65; border-left: 2px#5a5a5a65;">
                                     <div class="row" style="margin-left: 16px;">Edit Recipes</div>
-                                    <button id="changeUsernameBtn" class="btn btn-outline-primary mb-3 rounded align-self-end" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change username</button>
+                                    <div class="row d-flex flex-row align-items-start" id="recipesRow" style="margin-top: 0.8em; margin-left: 4px;">
+                                        <span id="noResults"></span>
+                                        <!-- Buttons will be inserted here dynamically -->
+                                    </div>
                                 </div>
-                                <div class="fs-5 text-white fw-bold mt-2 w-100" style="border-bottom: 2px solid #5a5a5a65;">
-                                    <div class="row" style="margin-left: 16px;">Change Password</div>
-                                    <button id="changePswBtn" class="btn btn-outline-primary mb-3 rounded" style="width: 98.5%; margin-top: 1em; margin-left: 16px;">Change password</button>
-                                </div>
-                            </div>
+                            </div>                            
                         </div>
                     </div>
                 </div>
             </div>
-
             <div class="col custom-bg">
                 <!--Right column-->
             </div> 
         </div>
     </div>
 
-    <div class="modal fade" id="addRecipeModal" tabindex="-1" aria-labelledby="addRecipeModalLabel" aria-hidden="true">
+    <div class="modal fade" id="changeUsernameModal" tabindex="-1" aria-labelledby="changeUsernameModalLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content custom-bg">
             <div class="modal-header">
-                <h5 class="modal-title float-start" id="addRecipeModalLabel">Add Recipe</h5>
+                <h5 class="modal-title float-start" id="changeUsernameModalLabel">Change Username</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
                     <span class="align-middle" aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <form onsubmit="addRecipe(event)" novalidate>
+                <form onsubmit="changeUsername(event)" novalidate>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-3" id="newUsername" placeholder="New Username" name="newUsername" required>
+                        <label for="newUsername"><b>New Username</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control mt-2" id="password" placeholder="Password" name="password" required>
+                        <label for="password"><b>Password</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>                
+            </div>
+        </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="changePswModal" tabindex="-1" aria-labelledby="changePswModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content custom-bg">
+            <div class="modal-header">
+                <h5 class="modal-title float-start" id="changePswModalLabel">Add Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="align-middle" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="changePassword(event)" novalidate>
+                    <div class="form-floating">
+                        <input type="text" class="form-control mt-3" id="currentPsw" placeholder="Current password" name="currentPsw" required>
+                        <label for="currentPsw"><b>Current Password</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control mt-2" id="newPsw" placeholder="New Password" name="newPsw" required>
+                        <label for="newPsw"><b>New Password</b></label>
+                        <div class="invalid-feedback">This field cannot be empty.</div>
+                    </div>
+                    <div class="form-floating">
+                        <input type="password" class="form-control mt-2" id="confirmNewPsw" placeholder="Confirm New Password" name="confirmNewPsw" required>
+                        <label for="confirmNewPsw"><b>Confirm New Password</b></label>
+                        <div class="invalid-feedback" id="confirmNewPswError">This field cannot be empty.</div>
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                </form>                
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editRecipeModal" tabindex="-1" aria-labelledby="editRecipeModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content custom-bg">
+            <div class="modal-header">
+                <h5 class="modal-title float-start" id="editRecipeModalLabel">Edit Recipe</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    <span class="align-middle" aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form onsubmit="editRecipe(event)" novalidate>
                     <div class="form-floating">
                         <input type="text" class="form-control mt-3" id="recipeName" placeholder="Recipe name" name="recipeName" required>
                         <label for="recipeName"><b>Recipe name</b></label>
@@ -128,32 +187,30 @@
                             <div class="row mt-2" id="tagsRow"></div>
                         </div>
 
-                    <button type="submit" class="btn btn-primary mt-3">Submit</button>
+                    <button type="submit" class="btn btn-primary mt-3" data-bs-dismiss="modal">Submit</button>
                 </form>                
             </div>
         </div>
         </div>
     </div>
-    
+
     <script>
         let username = null;
         let loggedIn = false;
         let userId = null;
         let recipesCount = 0;
         let recipe_names = [];
+        let recipe_ingredients = [];
+        let recipe_instructions = [];
         let recipe_cook_times = [];
         let recipe_servings = [];
         let recipe_images = [];
         let recipe_ids = [];
+        let recipe_tags = [];
         let tags = [];
         let new_recipe_tags = [];
-        let tags_checked = [];
-        let taggedRecipesCount = 0;
-        let taggedRecipe_names = [];
-        let taggedRecipe_cook_times = [];
-        let taggedRecipe_servings = [];
-        let taggedRecipe_images = [];
-        let taggedRecipe_ids = [];
+        let curr_name = '';
+        
 
         const request = (url, params = {}, method = 'GET', headers = {}) => {
             let options = {
@@ -238,6 +295,120 @@
             }
         }
 
+        function changeUsername(event) {
+            event.preventDefault();
+            const form = event.target;
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+            const newUsername = form.newUsername.value;
+            const password = form.password.value;
+            params = {
+                "username": username,
+                "newUsername": newUsername,
+                "password": password
+            }
+            
+            get('http://localhost:8080/changeUsername', params, {'Content-Type': 'application/json'}
+            ).then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (data === "Success") {
+                    alert("Username changed successfully");
+                    
+                    get('http://localhost:8080/logout').then(response => response.text()).then(data => {
+                        if (data === "Logout successful") {
+                            window.location.href = 'login.html';
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    alert("Username change failed");
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function resetChangeUsernameForm(){
+            const form = document.querySelector('form[onsubmit="changeUsername(event)"]');
+            form.reset();
+            document.getElementById('newUsername').classList.remove('is-invalid');
+            form.classList.remove('was-validated');
+        }
+
+        function changePassword(event) {
+            event.preventDefault();
+            const form = event.target;
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');
+                return;
+            }
+            var password = document.getElementById('currentPsw').value;
+            var newPassword = document.getElementById('newPsw').value;
+            var confirmNewPassword = document.getElementById('confirmNewPsw').value;
+            var confirmNewPswField = document.getElementById('confirmNewPsw');
+            var confirmNewPswError = document.getElementById('confirmNewPswError');
+
+            if (newPassword !== confirmNewPassword) {
+                confirmNewPswField.setCustomValidity('Passwords do not match.');
+                confirmNewPswError.textContent = 'Passwords do not match.';
+                confirmNewPswField.classList.add('is-invalid');
+                return false; // Prevent the form from submitting
+            } else {
+                confirmNewPswField.setCustomValidity('');
+                confirmNewPswError.textContent = 'This field cannot be empty.';
+                confirmNewPswField.classList.remove('is-invalid');
+            }
+
+            params = {
+                "username": username,
+                "password": password,
+                "newPassword": newPassword
+            }
+            
+            get('http://localhost:8080/changePassword', params, {'Content-Type': 'application/json'}
+            ).then(response => {
+                if (response.ok) {
+                    return response.text();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            }).then(data => {
+                if (data === "Success") {
+                    alert("Password changed successfully");
+                    get('http://localhost:8080/logout').then(response => response.text()).then(data => {
+                        if (data === "Logout successful") {
+                            window.location.href = 'login.html';
+                        }
+                    }).catch(error => {
+                        console.error('Error:', error);
+                    });
+                } else {
+                    alert("Username change failed");
+                }
+            }).catch(error => {
+                console.error('Error:', error);
+            });
+        }
+
+        function resetChangePswForm(){
+            const form = document.querySelector('form[onsubmit="changePassword(event)"]');
+            form.reset();
+            document.getElementById('currentPsw').classList.remove('is-invalid');
+            document.getElementById('newPsw').classList.remove('is-invalid');
+            document.getElementById('confirmNewPsw').classList.remove('is-invalid');
+            form.classList.remove('was-validated');
+        }
+
         function getAllTags(){
             return get('http://localhost:8080/allTags').then(response => {
                 if (response.ok) {
@@ -253,7 +424,6 @@
                 data.forEach(tag => {
                     tags.push(tag.name);
                 });
-                
                 if (!Array.isArray(tags)) {
                     throw new Error('Invalid tags format');
                 }
@@ -262,36 +432,8 @@
                 console.error('Error:', error);
             });
         }
-
-        function displayFilterTags(){
-            var tagsCol = document.getElementById('tagsCol');
-            for (var i = 0; i < tags.length; i++) {
-                var tagsDiv = document.createElement('div');
-                tagsDiv.classList.add('form-check', 'mb-2');
-                var tag = document.createElement('input');
-                tag.classList.add('form-check-input');
-                tag.setAttribute('type', 'checkbox');
-                tag.setAttribute('id', tags[i]);
-                tag.setAttribute('data-label', tags[i]);
-                var label = document.createElement('label');
-                label.classList.add('form-check-label');
-                label.setAttribute('for', tags[i]);
-                label.innerText = tags[i];
-                tagsDiv.appendChild(tag);
-                tagsDiv.appendChild(label);
-                tagsCol.appendChild(tagsDiv);
-                tag.addEventListener('change', function() {
-                    if(this.checked) tags_checked.push(this.getAttribute('data-label'));
-                    else{
-                        var index = tags_checked.indexOf(this.getAttribute('data-label'));
-                        if(index > -1) tags_checked.splice(index, 1);
-                    }
-                    console.log(tags_checked);
-                });
-            }
-        }
         
-        function setNewRecipeTags(){
+        function showTags(){
             var tagsRow = document.getElementById('tagsRow');
             tagsRow.innerHTML = '';
             for (var i = 0; i < tags.length; i++) {
@@ -316,156 +458,25 @@
                 tagsDiv.appendChild(label);
                 tagCol.appendChild(tagsDiv);
                 tagsRow.appendChild(tagCol);
-                
+
                 tag.addEventListener('change', function() {
                     if (this.checked) {
-                        new_recipe_tags.push(this.getAttribute('data-label'));
+                        edit_recipe_tags.push(this.getAttribute('data-label'));
                     } else {
-                        var index = new_recipe_tags.indexOf(this.getAttribute('data-label'));
+                        var index = edit_recipe_tags.indexOf(this.getAttribute('data-label'));
                         if (index > -1) {
-                            new_recipe_tags.splice(index, 1);
+                            edit_recipe_tags.splice(index, 1);
                         }
                     }
-                    console.log(new_recipe_tags);
+                    console.log(edit_recipe_tags);
                 });
             }
         }
 
-        function getTaggedRecipes(tags){
-            return post('http://localhost:8080/taggedRecipes', tags, {'Content-Type': 'application/json'}
-            ).then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            }).then(data => {
-                if (!data || typeof data !== 'object') {
-                    throw new Error('Invalid data format');
-                }
-
-                data.forEach(recipe => {
-                    recipe_names.push(recipe.name);
-                    recipe_cook_times.push(recipe.cookingtime);
-                    recipe_servings.push(recipe.servings);
-                    recipe_images.push(recipe.image);
-                    recipe_ids.push(recipe.id);
-                });
-                recipesCount = recipe_names.length;
-                if (!Array.isArray(recipe_names)) {
-                    throw new Error('Invalid recipes format');
-                }
-                
-            }).catch(error => {
-                console.error('Error:', error);
-            });
-        }
-
-        async function confirmFilter(){
+        function getAddedRecipes(){
             var recipesRow = document.getElementById('recipesRow');
             recipesRow.innerHTML = '';
-            recipesCount = 0;
-            recipe_names = [];
-            recipe_cook_times = [];
-            recipe_servings = [];
-            recipe_images = [];
-            recipe_ids = [];
-            if(tags_checked.length === 0){
-                await displayRecipes();
-                return;
-            }
-            console.log(tags_checked);
-            await getTaggedRecipes(tags_checked);
-            
-            if(recipesCount === 0) {
-                document.getElementById("recipesRow").innerText = "No results found...";
-                var currentUrl = new URL(window.location.href);
-                history.replaceState({}, '', currentUrl.toString());
-                return;
-            }
-            
-            for (var i = 0; i < recipesCount; i++) {
-                var buttonCol = document.createElement('div');
-                buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-                
-                var button = document.createElement('button');
-                button.classList.add('btn', 'btn-primary', 'btn-square');
-                button.innerText = recipe_names[i];
-                button.setAttribute('data-cooking-time', `${recipe_cook_times[i]}`);
-                button.setAttribute('data-servings', `${recipe_servings[i]}`);
-                button.style.backgroundImage = `url('${recipe_images[i]}')`;
-                button.style.backgroundSize = 'cover';
-                button.style.backgroundPosition = 'center';
-                button.style.color = 'white'; // Ensure text is visible
-                button.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
-                button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
-                buttonCol.appendChild(button);
-                recipesRow.appendChild(buttonCol);
-            }
-  
-            var currentUrl = new URL(window.location.href);
-            history.replaceState({}, '', currentUrl.toString());
-        }
-        
-        function addRecipe(event){
-            event.preventDefault();
-            var form = event.target;
-            
-            if (!form.checkValidity()) {
-                event.stopPropagation();
-                form.classList.add('was-validated');    
-            } else {
-                params = {
-                    'creatorId': userId,
-                    'name': document.getElementById("recipeName").value,
-                    'cookingtime': document.getElementById("cookingTime").value,
-                    'servings': document.getElementById("servings").value,
-                    'ingredients': document.getElementById("ingredients").value,
-                    'instructions': document.getElementById("instructions").value,
-                    'image': document.getElementById("recipeImage").value,
-                    'tags': new_recipe_tags
-                }
-                post('http://localhost:8080/addRecipe', params, {'Content-Type': 'application/json'}
-                ).then(response => response.text()).then(data => {
-                    if(data == "Success"){
-                        displayTags();
-                        displayRecipes();
-                    }
-                    else{
-                        alert(data);
-                    }
-                    
-                }).catch(error => {
-                    console.error('Error:', error);
-                });  
-    
-                resetAddRecipeForm();
-            }
-        }
-
-        function resetAddRecipeForm(){
-            const form = document.querySelector('form[onsubmit="addRecipe(event)"]');
-            form.reset();
-            new_recipe_tags = [];
-            let checkboxes = document.querySelectorAll('#tagsRow .form-check-input');
-            checkboxes.forEach(checkbox => checkbox.checked = false);
-            form.classList.remove('was-validated');
-        }
-
-        function displayAddRecipeBtn(){
-            var buttonCol = document.createElement('div');
-            buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
-            var button = document.createElement('button');
-            button.classList.add('btn', 'btn-primary', 'btn-add-recipe');
-            button.setAttribute('data-bs-toggle', 'modal');
-            button.setAttribute('data-bs-target', '#addRecipeModal');
-            buttonCol.appendChild(button);
-            var recipesRow = document.getElementById('recipesRow');
-            recipesRow.appendChild(buttonCol);  
-        }
-
-        function getAllRecipes(){
-            return get('http://localhost:8080/allRecipes').then(response => {
+            return get('http://localhost:8080/addedRecipes', {'creatorId': userId}).then(response => {
                 if (response.ok) {
                     return response.json();
                 } else {
@@ -475,14 +486,18 @@
                 if (!data || typeof data !== 'object') {
                     throw new Error('Invalid data format');
                 }
-
+                
                 data.forEach(recipe => {
                     recipe_names.push(recipe.name);
                     recipe_cook_times.push(recipe.cookingtime);
+                    recipe_ingredients.push(recipe.ingredients);
+                    recipe_instructions.push(recipe.instructions);
                     recipe_servings.push(recipe.servings);
                     recipe_images.push(recipe.image);
                     recipe_ids.push(recipe.id);
+                    recipe_tags.push(recipe.tags);
                 });
+                
                 recipesCount = data.length;
 
                 if (!Array.isArray(recipe_names)) {
@@ -496,37 +511,107 @@
         }
         
         function displayRecipes(){
-            getAllRecipes().then(() => {
+            getAddedRecipes().then(() => {
+                if(recipesCount === 0) {
+                    document.getElementById("recipesRow").innerText = "No recipes to edit...";
+                    return;
+                }
                 var recipesRow = document.getElementById('recipesRow');
+                recipesRow.innerHTML = '';
                 for (var i = 0; i < recipesCount; i++) {
                     var buttonCol = document.createElement('div');
                     buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
                     
-                    var button = document.createElement('button');
-                    button.classList.add('btn', 'btn-primary', 'btn-square');
-                    button.innerText = recipe_names[i];
-                    button.setAttribute('data-cooking-time', `${recipe_cook_times[i]}`);
-                    button.setAttribute('data-servings', `${recipe_servings[i]}`);
-                    button.style.backgroundImage = `url('${recipe_images[i]}')`;
-                    button.style.backgroundSize = 'cover';
-                    button.style.backgroundPosition = 'center';
-                    button.style.color = 'white';
-                    button.style.textShadow = '2px 2px 4px rgba(0, 0, 0, 0.7)';
-                    button.setAttribute('onclick', 'accessRecipe("' + recipe_names[i] + '")');
-                    buttonCol.appendChild(button);
+                    var recipe = document.createElement('div');
+                    recipe.classList.add('rounded');    
+                    recipe.style.width = '8em';
+                    recipe.style.height = '8em';
+                    recipe.style.display = 'flex';
+                    recipe.style.justifyContent = 'center';
+                    recipe.style.alignItems = 'center';
+                    recipe.style.backgroundImage = `url('${recipe_images[i]}')`;
+                    recipe.style.backgroundSize = 'cover';
+                    recipe.style.backgroundPosition = 'center';
+                    recipe.style.color = 'white';
+                    recipe.innerText = recipe_names[i];
+                    recipe.style.position = 'relative';
+
+                    var editRecipeBtn = document.createElement('button');
+                    editRecipeBtn.classList.add('btn', 'btn-secondary', 'btn-edit-recipe');
+                    editRecipeBtn.setAttribute('data-bs-toggle', 'modal');
+                    editRecipeBtn.setAttribute('data-bs-target', '#editRecipeModal');
+                    editRecipeBtn.setAttribute('onclick', 'fillRecipeForm(' + i + ')');
+                    
+                    recipe.appendChild(editRecipeBtn);
+                    buttonCol.appendChild(recipe);
                     recipesRow.appendChild(buttonCol);
                 }
-                displayAddRecipeBtn();
             });
         }
+    
 
-        function accessRecipe(recipe_name){
-            window.location.href = 'recipe.html?recipe=' + recipe_name;            
+
+        function fillRecipeForm(index){
+            document.getElementById('recipeName').value = recipe_names[index];
+            document.getElementById('recipeImage').value = recipe_images[index];
+            document.getElementById('ingredients').value = recipe_ingredients[index];
+            document.getElementById('instructions').value = recipe_instructions[index];
+            document.getElementById('cookingTime').value = recipe_cook_times[index];
+            document.getElementById('servings').value = recipe_servings[index];
+            edit_recipe_tags = recipe_tags[index].split(',').map(tag => tag.trim());
+
+            document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            showTags();
+            edit_recipe_tags.forEach(tag => {
+                let checkbox = document.querySelector(`input[data-label="${tag}"]`);
+                if (checkbox) {
+                    checkbox.checked = true;
+                }
+            });
+            curr_name = recipe_names[index];
+        }
+
+        function editRecipe(event){
+            event.preventDefault();
+            var form = event.target;
+            
+            if (!form.checkValidity()) {
+                event.stopPropagation();
+                form.classList.add('was-validated');    
+            } else {
+                params = {
+                    'creatorId': userId,
+                    'currName': curr_name, 
+                    'newName': document.getElementById("recipeName").value,
+                    'cookingtime': document.getElementById("cookingTime").value,
+                    'servings': document.getElementById("servings").value,
+                    'ingredients': document.getElementById("ingredients").value,
+                    'instructions': document.getElementById("instructions").value,
+                    'image': document.getElementById("recipeImage").value,
+                    'tags': edit_recipe_tags
+                }
+                post('http://localhost:8080/editRecipe', params, {'Content-Type': 'application/json'}
+                ).then(response => response.text()).then(data => {
+                    if(data == "Success"){
+                        alert("Recipe edited successfully!");
+                    }
+                    else{
+                        alert("Failed to edit recipe...");
+                    }
+                    
+                }).catch(error => {
+                    console.error('Error:', error);
+                });
+            }
         }
         
         document.addEventListener('DOMContentLoaded', async () => {
             await isLogged();
-            
+            if(!loggedIn) window.location.href = 'index.html';
+            userId = await getUserId(username);
+            await getAllTags();
             const accountButton = document.getElementById('accountBtn');
             const editRecipesButton = document.getElementById('editRecipesBtn');
             const accountOptions = document.getElementById('accountOptions');
@@ -554,15 +639,15 @@
                     accountButton.classList.remove('text-white');
                     accountOptions.style.visibility = "hidden";
                     editRecipesOptions.style.visibility = "visible";
+                    displayRecipes();
                 }
             });
-            // userId = await getUserId(username);
-            // await getAllTags();
-            // displayFilterTags();
-            // setNewRecipeTags();
-            // displayRecipes();
-            // document.getElementById('addRecipeModal').addEventListener('hidden.bs.modal', resetAddRecipeForm);
+            
+            document.getElementById('changeUsernameModal').addEventListener('hidden.bs.modal', resetChangeUsernameForm);
+            document.getElementById('changePswModal').addEventListener('hidden.bs.modal', resetChangePswForm);
+            document.getElementById('editRecipeModal').addEventListener('hidden.bs.modal', displayRecipes);
         });
+
 
     </script>
 

@@ -414,9 +414,10 @@
                     if(data == "Success"){
                         displayTags();
                         displayRecipes();
+                        alert("Recipe added successfully!");
                     }
                     else{
-                        alert(data);
+                        alert("Failed to add recipe...");
                     }
                     
                 }).catch(error => {
@@ -436,6 +437,10 @@
         }
 
         function displayAddRecipeBtn(){
+            if(!loggedIn){
+                alert("Please login to add a recipe!");
+                return;
+            }
             var buttonCol = document.createElement('div');
             buttonCol.classList.add('col-md-3', 'mb-4', 'd-flex', 'justify-content-center');
             var button = document.createElement('button');
@@ -444,7 +449,7 @@
             button.setAttribute('data-bs-target', '#addRecipeModal');
             buttonCol.appendChild(button);
             var recipesRow = document.getElementById('recipesRow');
-            recipesRow.appendChild(buttonCol);  
+            recipesRow.appendChild(buttonCol);
         }
 
         function getAllRecipes(){
@@ -499,7 +504,7 @@
                     buttonCol.appendChild(button);
                     recipesRow.appendChild(buttonCol);
                 }
-                if(loggedIn) displayAddRecipeBtn();
+                displayAddRecipeBtn();
             });
         }
 
